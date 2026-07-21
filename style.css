@@ -29,6 +29,20 @@
 }
 
 body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+
+body {
     font-family: 'Hind Siliguri', sans-serif;
     background: var(--bg);
     color: var(--text);
