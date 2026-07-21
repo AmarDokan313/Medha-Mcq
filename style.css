@@ -1267,3 +1267,391 @@ body {
     margin-top: 10px;
     font-size: 0.9rem;
 }
+/* ===== নতুন কোড (style.css শেষে বসান) ===== */
+
+/* কুইক মেনু */
+.quick-menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    margin: 10px 16px;
+    border-radius: 16px;
+}
+
+.quick-menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--primary);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 0.75rem;
+    padding: 8px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.quick-menu button i {
+    font-size: 1.3rem;
+}
+
+.quick-menu button:hover {
+    background: var(--bg);
+}
+
+/* চ্যাপ্টার কার্ড */
+.chapter-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.done-badge {
+    background: #00c853;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.progress-badge {
+    background: #e8eaf6;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #1a237e;
+}
+
+/* MCQ হেডার */
+.mcq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.3s;
+    padding: 4px;
+}
+
+.favorite-btn.active {
+    color: #ffd700;
+}
+
+.option-letter {
+    font-weight: 600;
+    color: #1a237e;
+    margin-right: 5px;
+}
+
+/* প্রোফাইল */
+.profile-container {
+    padding: 20px 16px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.profile-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.profile-card h2 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.profile-card p {
+    color: var(--text-light);
+}
+
+.profile-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.profile-stat {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.profile-stat span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a237e;
+}
+
+.profile-stat p {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 14px;
+    background: #ff1744;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* ইতিহাস */
+.history-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-info h4 {
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.history-info p {
+    font-size: 0.8rem;
+    color: #1a237e;
+}
+
+.history-time p {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-align: right;
+}
+
+/* ফেভারিট ট্যাগ */
+.fav-subject-tag {
+    background: #1a237e;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+/* খালি স্টেট */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* লিডারবোর্ড ফুল */
+.leaderboard-full {
+    padding: 16px;
+}
+
+.my-rank {
+    border: 2px solid #ff6f00 !important;
+}
+
+/* রেজাল্ট পয়েন্ট */
+.result-points {
+    background: #ffd740;
+    color: #333;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* AI চ্যাট */
+.ai-chat-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    z-index: 500;
+    transition: all 0.3s;
+}
+
+.ai-chat-btn:hover {
+    transform: scale(1.1);
+}
+
+.ai-chat-box {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.chat-header button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-message {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.user-message {
+    background: #667eea;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-message {
+    background: #f5f7ff;
+    color: #1a237e;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-input-area {
+    padding: 10px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 22px;
+    border: 2px solid #e0e0e0;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 0.9rem;
+    background: #f5f7ff;
+    outline: none;
+}
+
+.chat-input-area button {
+    background: #667eea;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* টোস্ট নোটিফিকেশন */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 9999;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* লোগো আইকন */
+.logo-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.loading-text {
+    color: rgba(255,255,255,0.7);
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
