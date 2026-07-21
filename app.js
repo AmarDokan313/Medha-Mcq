@@ -58,6 +58,48 @@ function updateUserUI() {
 // বিষয় দেখানো
 function showSubject(subjectKey) {
     currentSubject = subjectKey;
+    
+    if (!subjectData[subjectKey]) {
+        showToast('এই বিষয়ের প্রশ্ন শীঘ্রই আসছে!');
+        return;
+    }
+    
+    const subject = subjectData[subjectKey];
+    document.getElementById('subject-title').textContent = subject.name;
+
+    const chaptersList = document.getElementById('chapters-list');
+    chaptersList.innerHTML = '';
+
+    if (!subject.chapters || subject.chapters.length === 0) {
+        chaptersList.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><p>শীঘ্রই আসছে!</p></div>';
+        showPage('subject-page');
+        return;
+    }
+
+    subject.chapters.forEach((chapter, index) => {
+        const progress = getChapterProgress(subjectKey, index);
+        const card = document.createElement('div');
+        card.className = 'chapter-card';
+        card.innerHTML = `
+            <div class="chapter-info">
+                <h4>${chapter.name}</h4>
+                <p>${chapter.questions.length}টি প্রশ্ন</p>
+                ${progress ? `<div class="chapter-progress">
+                    <span class="progress-badge">সর্বোচ্চ: ${progress.correct}/${progress.total}</span>
+                </div>` : ''}
+            </div>
+            <div class="chapter-right">
+                ${progress ? '<span class="done-badge">✓</span>' : ''}
+                <i class="fas fa-chevron-right chapter-arrow"></i>
+            </div>
+        `;
+        card.onclick = () => showChapterMCQ(index);
+        chaptersList.appendChild(card);
+    });
+
+    showPage('subject-page');
+}
+    currentSubject = subjectKey;
     const subject = subjectData[subjectKey];
     document.getElementById('subject-title').textContent = subject.name;
 
