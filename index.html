@@ -1,1568 +1,308 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>Medha MCQ </title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --paper: #FBF7EE;
-            --ink: #1E2A22;
-            --forest: #0F5132;
-            --crimson: #C81E3A;
-            --gold: #C9971F;
-            --line: #DCD3C0;
-            --sand: #F1EADB;
-            --moss: #E7F3EC;
-            --rose: #FBEAEA;
-            --muted: #8A7A5C;
-            --dark-muted: #5B5140;
-            --font-body: 'Noto Sans Bengali', sans-serif;
-            --font-display: 'Baloo Da 2', sans-serif;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--paper);
-            color: var(--ink);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 0;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        #app {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            position: relative;
-            background: var(--paper);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
-            margin: 0 auto;
-        }
-
-        /* ---- Helpers ---- */
-        .font-display {
-            font-family: var(--font-display);
-        }
-
-        .ruled-bg {
-            background-image: repeating-linear-gradient(var(--paper), var(--paper) 35px, #E6DCC8 36px);
-        }
-
-        .bubble {
-            transition: all 0.15s ease;
-            cursor: pointer;
-        }
-        .bubble:active {
-            transform: scale(0.97);
-        }
-
-        button {
-            font-family: var(--font-body);
-            cursor: pointer;
-            border: none;
-            background: none;
-            outline: none;
-        }
-        button:disabled {
-            cursor: default;
-            opacity: 0.5;
-        }
-
-        /* ---- Scrollbar ---- */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--paper);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--line);
-            border-radius: 10px;
-        }
-
-        /* ---- Screen transitions ---- */
-        .screen {
-            display: none;
-            animation: fadeUp 0.25s ease;
-        }
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ---- Home hero ---- */
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            margin-bottom: 12px;
-            font-family: var(--font-display);
-            font-size: 28px;
-            font-weight: 800;
-            background: var(--paper);
-            color: var(--forest);
-            border: 3px solid var(--gold);
-            line-height: 1.2;
-            text-align: center;
-        }
-
-        /* ---- Exam timer pulse ---- */
-        .timer-pulse {
-            animation: pulse 1.2s infinite;
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-        }
-
-        /* ---- Result big number ---- */
-        .result-circle {
-            width: 112px;
-            height: 112px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-size: 36px;
-            font-weight: 800;
-            background: var(--forest);
-            color: var(--paper);
-            border: 4px solid var(--gold);
-            margin: 0 auto 20px;
-        }
-
-        /* ---- Misc ---- */
-        .shrink-0 {
-            flex-shrink: 0;
-        }
-        .gap-1 {
-            gap: 4px;
-        }
-        .gap-2 {
-            gap: 8px;
-        }
-        .gap-3 {
-            gap: 12px;
-        }
-        .mt-0\.5 {
-            margin-top: 2px;
-        }
-        .mt-1 {
-            margin-top: 4px;
-        }
-        .mt-3 {
-            margin-top: 12px;
-        }
-        .mb-1 {
-            margin-bottom: 4px;
-        }
-        .mb-2 {
-            margin-bottom: 8px;
-        }
-        .mb-3 {
-            margin-bottom: 12px;
-        }
-        .mb-4 {
-            margin-bottom: 16px;
-        }
-        .mb-5 {
-            margin-bottom: 20px;
-        }
-        .mb-6 {
-            margin-bottom: 24px;
-        }
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .flex {
-            display: flex;
-        }
-        .flex-1 {
-            flex: 1;
-        }
-        .flex-col {
-            flex-direction: column;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .items-start {
-            align-items: flex-start;
-        }
-        .justify-between {
-            justify-content: space-between;
-        }
-        .justify-center {
-            justify-content: center;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-left {
-            text-align: left;
-        }
-        .w-full {
-            width: 100%;
-        }
-        .w-6 {
-            width: 24px;
-        }
-        .w-7 {
-            width: 28px;
-        }
-        .w-11 {
-            width: 44px;
-        }
-        .w-24 {
-            width: 96px;
-        }
-        .w-28 {
-            width: 112px;
-        }
-        .h-6 {
-            height: 24px;
-        }
-        .h-7 {
-            height: 28px;
-        }
-        .h-11 {
-            height: 44px;
-        }
-        .h-24 {
-            height: 96px;
-        }
-        .h-28 {
-            height: 112px;
-        }
-        .inline {
-            display: inline;
-        }
-        .inline-flex {
-            display: inline-flex;
-        }
-        .rounded-full {
-            border-radius: 9999px;
-        }
-        .rounded-xl {
-            border-radius: 12px;
-        }
-        .rounded-2xl {
-            border-radius: 16px;
-        }
-        .p-3 {
-            padding: 12px;
-        }
-        .p-4 {
-            padding: 16px;
-        }
-        .p-5 {
-            padding: 20px;
-        }
-        .px-2 {
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-        .px-3 {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-        .px-4 {
-            padding-left: 16px;
-            padding-right: 16px;
-        }
-        .px-5 {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-        .px-6 {
-            padding-left: 24px;
-            padding-right: 24px;
-        }
-        .py-1 {
-            padding-top: 4px;
-            padding-bottom: 4px;
-        }
-        .py-2 {
-            padding-top: 8px;
-            padding-bottom: 8px;
-        }
-        .py-3 {
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-        .py-4 {
-            padding-top: 16px;
-            padding-bottom: 16px;
-        }
-        .py-6 {
-            padding-top: 24px;
-            padding-bottom: 24px;
-        }
-        .py-8 {
-            padding-top: 32px;
-            padding-bottom: 32px;
-        }
-        .py-16 {
-            padding-top: 64px;
-            padding-bottom: 64px;
-        }
-        .pt-6 {
-            padding-top: 24px;
-        }
-        .pt-14 {
-            padding-top: 56px;
-        }
-        .pb-2 {
-            padding-bottom: 8px;
-        }
-        .pb-3 {
-            padding-bottom: 12px;
-        }
-        .pb-4 {
-            padding-bottom: 16px;
-        }
-        .pb-8 {
-            padding-bottom: 32px;
-        }
-        .pb-10 {
-            padding-bottom: 40px;
-        }
-        .space-y-2>*+* {
-            margin-top: 8px;
-        }
-        .space-y-3>*+* {
-            margin-top: 12px;
-        }
-        .space-y-4>*+* {
-            margin-top: 16px;
-        }
-        .shrink-0 {
-            flex-shrink: 0;
-        }
-        .text-xs {
-            font-size: 12px;
-        }
-        .text-sm {
-            font-size: 14px;
-        }
-        .text-base {
-            font-size: 16px;
-        }
-        .text-xl {
-            font-size: 20px;
-        }
-        .text-2xl {
-            font-size: 24px;
-        }
-        .text-3xl {
-            font-size: 28px;
-        }
-        .text-4xl {
-            font-size: 32px;
-        }
-        .font-semibold {
-            font-weight: 600;
-        }
-        .font-bold {
-            font-weight: 700;
-        }
-        .font-extrabold {
-            font-weight: 800;
-        }
-        .tracking-wide {
-            letter-spacing: 0.025em;
-        }
-        .uppercase {
-            text-transform: uppercase;
-        }
-        .leading-tight {
-            line-height: 1.25;
-        }
-        .leading-snug {
-            line-height: 1.4;
-        }
-        .leading-relaxed {
-            line-height: 1.6;
-        }
-        .opacity-60 {
-            opacity: 0.6;
-        }
-        .opacity-40 {
-            opacity: 0.4;
-        }
-        .border {
-            border: 1px solid var(--line);
-        }
-        .border-2 {
-            border-width: 2px;
-        }
-        .border-dashed {
-            border-style: dashed;
-        }
-        .border-solid {
-            border-style: solid;
-        }
-        .rotate-180 {
-            transform: rotate(180deg);
-        }
-        .relative {
-            position: relative;
-        }
-        .overflow-hidden {
-            overflow: hidden;
-        }
-        .min-h-screen {
-            min-height: 100vh;
-        }
-        .bg-white {
-            background: #FFFFFF;
-        }
-        .bg-transparent {
-            background: transparent;
-        }
-
-        /* color shortcuts */
-        .text-forest {
-            color: var(--forest);
-        }
-        .text-gold {
-            color: var(--gold);
-        }
-        .text-crimson {
-            color: var(--crimson);
-        }
-        .text-paper {
-            color: var(--paper);
-        }
-        .text-muted {
-            color: var(--muted);
-        }
-        .text-dark-muted {
-            color: var(--dark-muted);
-        }
-        .bg-forest {
-            background: var(--forest);
-        }
-        .bg-gold {
-            background: var(--gold);
-        }
-        .bg-crimson {
-            background: var(--crimson);
-        }
-        .bg-paper {
-            background: var(--paper);
-        }
-        .bg-sand {
-            background: var(--sand);
-        }
-        .bg-moss {
-            background: var(--moss);
-        }
-        .bg-rose {
-            background: var(--rose);
-        }
-        .border-forest {
-            border-color: var(--forest);
-        }
-        .border-gold {
-            border-color: var(--gold);
-        }
-        .border-crimson {
-            border-color: var(--crimson);
-        }
-        .border-line {
-            border-color: var(--line);
-        }
-        .border-muted {
-            border-color: var(--muted);
-        }
-
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-        .gap-1 {
-            gap: 4px;
-        }
-        .gap-2 {
-            gap: 8px;
-        }
-        .gap-3 {
-            gap: 12px;
-        }
-        .gap-4 {
-            gap: 16px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medha MCQ - HSC ব্যবসায় শাখা</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <div id="app">
-        <!-- ========== HOME SCREEN ========== -->
-        <div id="screen-home" class="screen active">
-            <div class="pt-14 pb-8 px-6 text-center" style="background:var(--forest);">
-                <div class="hero-badge mx-auto">Medha</div>
-                <h1 class="font-display text-3xl font-extrabold" style="color:var(--paper);">Medha MCQ</h1>
-                <p class="mt-1 text-sm" style="color:#D9CBA8;">মেধা যাচাই করো, চ্যাপ্টার ধরে ধরে</p>
+    <!-- লোডিং স্ক্রিন -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="logo-animation">
+                <h1>Medha MCQ</h1>
+                <p>মেধা MCQ</p>
             </div>
-
-            <div class="px-5 py-6">
-                <p class="text-xs uppercase tracking-wide mb-3 font-semibold" style="color:var(--muted);">
-                    বিষয় নির্বাচন করো — HSC, ব্যবসায় শিক্ষা
-                </p>
-
-                <button onclick="goTo('chapters')" class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 bubble bg-white border-2 border-forest">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center bg-forest">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--ink);">হিসাববিজ্ঞান ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">১টি অধ্যায় প্রস্তুত (ডেমো)</p>
-                        </div>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg);"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-
-                <!-- Locked subjects -->
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">হিসাববিজ্ঞান ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ব্যবসায় সংগঠন ও ব্যবস্থাপনা ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ব্যবসায় সংগঠন ও ব্যবস্থাপনা ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ফিন্যান্স, ব্যাংকিং ও বিমা ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ফিন্যান্স, ব্যাংকিং ও বিমা ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">অর্থনীতি ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">অর্থনীতি ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">তথ্য ও যোগাযোগ প্রযুক্তি (আইসিটি)</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">পরিসংখ্যান ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">পরিসংখ্যান ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">বাংলা ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">বাংলা ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ইংরেজি ১ম পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center justify-between p-4 rounded-2xl mb-3 opacity-60 bg-white border-2 border-dashed border-line">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:var(--line);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-semibold" style="color:var(--dark-muted);">ইংরেজি ২য় পত্র</p>
-                            <p class="text-xs" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
             </div>
         </div>
-
-        <!-- ========== CHAPTERS SCREEN ========== -->
-        <div id="screen-chapters" class="screen">
-            <div class="flex items-center gap-3 px-5 pt-6 pb-4">
-                <button onclick="goTo('home')">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <h2 class="font-display text-xl font-bold">হিসাববিজ্ঞান ১ম পত্র</h2>
-            </div>
-            <div class="px-5">
-                <div class="w-full text-left p-4 rounded-2xl mb-3 flex items-center justify-between bubble bg-white border-2 border-forest" onclick="goTo('study')">
-                    <div>
-                        <p class="text-xs font-semibold" style="color:var(--gold);">অধ্যায় ১</p>
-                        <p class="font-semibold">হিসাববিজ্ঞান পরিচিতি</p>
-                        <p class="text-xs mt-0.5" style="color:var(--muted);">50টি MCQ প্রস্তুত</p>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg);"><polyline points="15 18 9 12 15 6"/></svg>
-                </div>
-
-                <div class="w-full text-left p-4 rounded-2xl mb-3 flex items-center justify-between opacity-60 bg-sand border-2 border-line">
-                    <div>
-                        <p class="text-xs font-semibold" style="color:var(--gold);">অধ্যায় ২</p>
-                        <p class="font-semibold" style="color:var(--dark-muted);">লেনদেন</p>
-                        <p class="text-xs mt-0.5" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-
-                <div class="w-full text-left p-4 rounded-2xl mb-3 flex items-center justify-between opacity-60 bg-sand border-2 border-line">
-                    <div>
-                        <p class="text-xs font-semibold" style="color:var(--gold);">অধ্যায় ৩</p>
-                        <p class="font-semibold" style="color:var(--dark-muted);">হিসাব সমীকরণ</p>
-                        <p class="text-xs mt-0.5" style="color:var(--muted);">শীঘ্রই আসছে</p>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== STUDY SCREEN ========== -->
-        <div id="screen-study" class="screen">
-            <div class="flex items-center justify-between px-5 pt-6 pb-2">
-                <div class="flex items-center gap-3">
-                    <button onclick="goTo('chapters')">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
-                    <h2 class="font-display text-xl font-bold">অধ্যায় ১: হিসাববিজ্ঞান পরিচিতি</h2>
-                </div>
-                <button onclick="goTo('favorites')" class="flex items-center gap-1 px-2 py-1 rounded-lg shrink-0" style="border:1.5px solid var(--gold);">
-                    <span id="fav-star-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    </span>
-                    <span class="text-xs font-semibold" style="color:var(--gold);" id="fav-count">0</span>
-                </button>
-            </div>
-
-            <div class="px-5 flex gap-2 mb-4">
-                <div class="flex-1 py-2 rounded-xl text-center text-sm font-semibold bg-forest text-paper">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-1"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-                    পড়ো
-                </div>
-                <button onclick="startExam()" class="flex-1 py-2 rounded-xl text-center text-sm font-semibold bg-white border-2 border-crimson text-crimson">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-1"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
-                    পরীক্ষা দাও
-                </button>
-            </div>
-
-            <div class="px-5 pb-10" id="study-mcq-list">
-                <!-- Rendered by JS -->
-            </div>
-        </div>
-
-        <!-- ========== FAVORITES SCREEN ========== -->
-        <div id="screen-favorites" class="screen">
-            <div class="flex items-center gap-3 px-5 pt-6 pb-4">
-                <button onclick="goTo('study')">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <h2 class="font-display text-xl font-bold flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    ফেভারিট প্রশ্ন
-                </h2>
-            </div>
-            <div class="px-5 pb-10" id="favorites-list">
-                <!-- Rendered by JS -->
-            </div>
-        </div>
-
-        <!-- ========== EXAM SCREEN ========== -->
-        <div id="screen-exam" class="screen">
-            <div class="px-5 pt-6 pb-3 flex items-center justify-between" style="background:var(--forest);">
-                <p class="text-sm font-semibold text-paper" id="exam-progress">প্রশ্ন 1 / 50</p>
-                <p class="flex items-center gap-1 text-sm font-bold px-3 py-1 rounded-full" style="background:var(--crimson);color:var(--paper);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span id="exam-timer">10:00</span>
-                </p>
-            </div>
-
-            <div class="px-5 py-6">
-                <div class="rounded-2xl p-5 ruled-bg border border-line" id="exam-question-card">
-                    <!-- Rendered by JS -->
-                </div>
-            </div>
-
-            <div class="px-5 pb-8 flex gap-3">
-                <button id="exam-prev-btn" class="flex-1 py-3 rounded-xl font-semibold text-sm border-2 border-forest text-forest" onclick="examPrev()">আগের প্রশ্ন</button>
-                <button id="exam-next-btn" class="flex-1 py-3 rounded-xl font-semibold text-sm bg-forest text-paper" onclick="examNext()">পরের প্রশ্ন</button>
-            </div>
-        </div>
-
-        <!-- ========== RESULT SCREEN ========== -->
-        <div id="screen-result" class="screen">
-            <div class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-                <div class="result-circle" id="result-score">0/0</div>
-                <h2 class="font-display text-2xl font-bold mb-1">পরীক্ষা শেষ!</h2>
-                <p class="text-sm mb-6" style="color:var(--muted);" id="result-message">তুমি 0টির মধ্যে 0টি সঠিক উত্তর দিয়েছ</p>
-                <div class="w-full space-y-3">
-                    <button onclick="goTo('study')" class="w-full py-3 rounded-xl font-semibold text-sm bg-forest text-paper">
-                        ব্যাখ্যাসহ উত্তর দেখো
-                    </button>
-                    <button onclick="goTo('home')" class="w-full py-3 rounded-xl font-semibold text-sm border-2 border-forest text-forest">
-                        হোমে ফিরে যাও
-                    </button>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        // ============================================================
-        //  DATA
-        // ============================================================
-        const OPTION_LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+    <!-- হোম পেজ -->
+    <div id="home-page" class="page hidden">
+        <!-- নেভিগেশন -->
+        <nav class="navbar">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>Medha MCQ</span>
+            </div>
+            <div class="nav-right">
+                <button class="dark-mode-btn" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="login-btn" onclick="showPage('login-page')">
+                    <i class="fas fa-user"></i> লগিন
+                </button>
+            </div>
+        </nav>
 
-        const CHAPTERS = [
-            { id: 1, title: 'হিসাববিজ্ঞান পরিচিতি', count: 50, locked: false },
-            { id: 2, title: 'লেনদেন', count: 0, locked: true },
-            { id: 3, title: 'হিসাব সমীকরণ', count: 0, locked: true },
-        ];
+        <!-- ব্যানার -->
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1>HSC পরীক্ষার সেরা প্রস্তুতি</h1>
+                <p>ব্যবসায় শাখার সকল বিষয়ের MCQ একটি অ্যাপে</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <h3>৫০০০+</h3>
+                        <p>MCQ প্রশ্ন</p>
+                    </div>
+                    <div class="stat">
+                        <h3>৪টি</h3>
+                        <p>বিষয়</p>
+                    </div>
+                    <div class="stat">
+                        <h3>১০০%</h3>
+                        <p>বোর্ড কমন</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        const MCQS = [{
-            q: 'হিসাববিজ্ঞানের মূল কাজ কোনটি?',
-            options: ['শুধু টাকা গণনা করা', 'আর্থিক লেনদেন লিপিবদ্ধ, শ্রেণিবদ্ধ ও সংক্ষিপ্তকরণ করা', 'পণ্য উৎপাদন করা', 'কর্মী নিয়োগ করা'],
-            answer: 1,
-            explanation: 'হিসাববিজ্ঞান হলো আর্থিক লেনদেনসমূহ সনাক্তকরণ, লিপিবদ্ধকরণ, শ্রেণিবদ্ধকরণ, সংক্ষিপ্তকরণ ও বিশ্লেষণের একটি প্রক্রিয়া, যা সিদ্ধান্ত গ্রহণে সাহায্য করে।'
-        }, {
-            q: 'হিসাববিজ্ঞানের তথ্যের সবচেয়ে বেশি ব্যবহারকারী কারা?',
-            options: ['শুধু মালিক', 'মালিক, বিনিয়োগকারী, পাওনাদার, সরকার ইত্যাদি', 'শুধু সরকার', 'শুধু কর্মচারী'],
-            answer: 1,
-            explanation: 'হিসাব তথ্যের ব্যবহারকারী দুই ধরনের — অভ্যন্তরীণ (মালিক, ব্যবস্থাপনা) ও বহিঃস্থ (বিনিয়োগকারী, পাওনাদার, সরকার, ব্যাংক)।'
-        }, {
-            q: 'দ্বৈত সত্তা নীতি (Business Entity Concept) অনুযায়ী —',
-            options: ['মালিক ও ব্যবসায় একই সত্তা', 'ব্যবসায় মালিকের থেকে আলাদা সত্তা', 'ব্যবসায়ের কোনো সত্তা নেই', 'মালিকানা দুইজনের মধ্যে ভাগ হয়'],
-            answer: 1,
-            explanation: 'এই নীতি অনুযায়ী ব্যবসায় প্রতিষ্ঠানকে মালিক থেকে সম্পূর্ণ পৃথক সত্তা হিসেবে গণ্য করা হয়, তাই মালিকের ব্যক্তিগত লেনদেন ব্যবসায়ের হিসাবে অন্তর্ভুক্ত হয় না।'
-        }, {
-            q: 'হিসাববিজ্ঞানের ভিত্তি মূলনীতি (Basic Accounting Equation) কোনটি?',
-            options: ['সম্পদ = দায় + মালিকানাস্বত্ব', 'সম্পদ = আয় − ব্যয়', 'দায় = সম্পদ + ব্যয়', 'মালিকানাস্বত্ব = দায় − সম্পদ'],
-            answer: 0,
-            explanation: 'হিসাব সমীকরণ: সম্পদ (Assets) = দায় (Liabilities) + মালিকানাস্বত্ব (Owner\'s Equity)। এটি হিসাববিজ্ঞানের ভিত্তি।'
-        }, {
-            q: 'নিচের কোনটি হিসাববিজ্ঞানের একটি শাখা নয়?',
-            options: ['আর্থিক হিসাববিজ্ঞান', 'ব্যয় হিসাববিজ্ঞান', 'ব্যবস্থাপনা হিসাববিজ্ঞান', 'বিপণন ব্যবস্থাপনা'],
-            answer: 3,
-            explanation: 'হিসাববিজ্ঞানের প্রধান শাখা তিনটি — আর্থিক, ব্যয় ও ব্যবস্থাপনা হিসাববিজ্ঞান। বিপণন ব্যবস্থাপনা হিসাববিজ্ঞানের শাখা নয়।'
-        }, {
-            q: 'GAAP এর পূর্ণরূপ কী?',
-            options: ['General Accepted Accounting Principles', 'Generally Accepted Accounting Principles',
-                'Global Accounting and Auditing Practice', 'General Auditing Accounting Policy'
-            ],
-            answer: 1,
-            explanation: 'GAAP = Generally Accepted Accounting Principles, অর্থাৎ সাধারণভাবে স্বীকৃত হিসাব নীতিমালা, যা হিসাব প্রস্তুতিতে অনুসরণ করা হয়।'
-        }, {
-            q: 'মুদ্রামান নীতি (Money Measurement Concept) অনুযায়ী হিসাবে লিপিবদ্ধ হয় —',
-            options: ['শুধু যা টাকায় প্রকাশ করা যায়', 'সব ধরনের ঘটনা', 'শুধু কর্মীর দক্ষতা', 'শুধু মালিকের ইচ্ছা'],
-            answer: 0,
-            explanation: 'এই নীতি অনুযায়ী কেবল সেসব লেনদেন হিসাবে লিপিবদ্ধ হয় যা আর্থিক মূল্যে (টাকায়) পরিমাপযোগ্য।'
-        }, {
-            q: 'চলমান প্রতিষ্ঠান নীতি (Going Concern Concept) এর অর্থ —',
-            options: ['ব্যবসায় শীঘ্রই বন্ধ হবে ধরে নেওয়া', 'ব্যবসায় অনির্দিষ্টকাল চলবে ধরে নেওয়া',
-                'ব্যবসায় প্রতি বছর বন্ধ হবে', 'ব্যবসায়ের কোনো ভবিষ্যৎ নেই'
-            ],
-            answer: 1,
-            explanation: 'এই নীতি অনুযায়ী ধরে নেওয়া হয় ব্যবসায় প্রতিষ্ঠান নিকট ভবিষ্যতে বন্ধ হবে না, বরং অনির্দিষ্টকাল ধরে চলতে থাকবে।'
-        }, {
-            q: 'হিসাবকাল (Accounting Period) সাধারণত কত সময়ের হয়?',
-            options: ['১ সপ্তাহ', '১ মাস', '১ বছর', '৫ বছর'],
-            answer: 2,
-            explanation: 'প্রতিষ্ঠানের আর্থিক ফলাফল নির্ণয়ের জন্য সাধারণত ১ বছরকে একটি হিসাবকাল ধরা হয়, একে অর্থবছরও বলা হয়।'
-        }, {
-            q: 'রক্ষণশীলতার নীতি (Conservatism Concept) অনুযায়ী —',
-            options: ['সম্ভাব্য লাভ দ্রুত হিসাবভুক্ত করা হয়', 'সম্ভাব্য ক্ষতি আগেভাগে হিসাবভুক্ত করা হয়, লাভ নয়',
-                'সব লাভ-ক্ষতি একসাথে ধরা হয়', 'কোনো ক্ষতি হিসাবভুক্ত করা হয় না'
-            ],
-            answer: 1,
-            explanation: 'এই নীতি অনুযায়ী সম্ভাব্য ক্ষতি অনুমান করে হিসাবভুক্ত করা হয়, কিন্তু সম্ভাব্য লাভ নিশ্চিত না হওয়া পর্যন্ত হিসাবভুক্ত করা হয় না — এটি একটি সতর্কতামূলক নীতি।'
-        }, {
-            q: 'হিসাববিজ্ঞানের জনক কাকে বলা হয়?',
-            options: ['অ্যাডাম স্মিথ', 'লুকা প্যাসিওলি', 'কার্ল মার্কস', 'ইবনে খালদুন'],
-            answer: 1,
-            explanation: 'ইতালীয় গণিতবিদ লুকা প্যাসিওলি ১৪৯৪ সালে দ্বৈত-এন্ট্রি পদ্ধতির উপর প্রথম গ্রন্থ রচনা করেন বলে তাকে আধুনিক হিসাববিজ্ঞানের জনক বলা হয়।'
-        }, {
-            q: 'বুককিপিং ও হিসাববিজ্ঞানের মধ্যে মূল পার্থক্য কী?',
-            options: ['বুককিপিং লেনদেন লিপিবদ্ধকরণ, হিসাববিজ্ঞান বিশ্লেষণ-ব্যাখ্যাসহ পূর্ণ প্রক্রিয়া', 'দুটো একই জিনিস',
-                'বুককিপিং শুধু বড় প্রতিষ্ঠানে হয়', 'হিসাববিজ্ঞান শুধু ছোট প্রতিষ্ঠানে হয়'
-            ],
-            answer: 0,
-            explanation: 'বুককিপিং হলো হিসাববিজ্ঞানের প্রাথমিক ধাপ, শুধু লেনদেন লিপিবদ্ধ করা হয়; হিসাববিজ্ঞান এর চেয়ে বিস্তৃত — এতে শ্রেণিবদ্ধকরণ, সংক্ষিপ্তকরণ, বিশ্লেষণ ও প্রতিবেদন তৈরিও অন্তর্ভুক্ত।'
-        }, {
-            q: 'হিসাববিজ্ঞান চক্রের প্রথম ধাপ কোনটি?',
-            options: ['খতিয়ানভুক্তকরণ', 'লেনদেন সনাক্তকরণ ও জাবেদাভুক্তকরণ', 'রেওয়ামিল তৈরি', 'আর্থিক বিবরণী প্রস্তুতকরণ'],
-            answer: 1,
-            explanation: 'হিসাববিজ্ঞান চক্র শুরু হয় লেনদেন সনাক্তকরণ ও জাবেদাভুক্তকরণের মাধ্যমে, এরপর খতিয়ানভুক্তকরণ, রেওয়ামিল ও আর্থিক বিবরণী প্রস্তুতকরণ হয়।'
-        }, {
-            q: 'হিসাববিজ্ঞান চক্রের সর্বশেষ ধাপ সাধারণত কোনটি?',
-            options: ['জাবেদাভুক্তকরণ', 'সমাপনী দাখিলা ও সমাপনী রেওয়ামিল', 'লেনদেন সনাক্তকরণ', 'খতিয়ানভুক্তকরণ'],
-            answer: 1,
-            explanation: 'হিসাবকাল শেষে নামিক হিসাবগুলো বন্ধ করতে সমাপনী দাখিলা দেওয়া হয় এবং সমাপনী রেওয়ামিল তৈরি করে চক্র সম্পন্ন হয়।'
-        }, {
-            q: 'ব্যক্তিবাচক হিসাব (Personal Account) এর ডেবিট-ক্রেডিট নিয়ম কোনটি?',
-            options: ['যা আসে তা ডেবিট, যা যায় তা ক্রেডিট', 'গ্রহীতাকে ডেবিট, দাতাকে ক্রেডিট', 'সকল খরচ ডেবিট, আয় ক্রেডিট',
-                'সম্পদ বৃদ্ধি ডেবিট, হ্রাস ক্রেডিট'
-            ],
-            answer: 1,
-            explanation: 'ব্যক্তিবাচক হিসাবের নিয়ম হলো— যিনি গ্রহণ করেন তাকে ডেবিট, যিনি প্রদান করেন তাকে ক্রেডিট করতে হয়।'
-        }, {
-            q: 'সম্পদবাচক হিসাব (Real Account) এর নিয়ম কোনটি?',
-            options: ['যা আসে তা ডেবিট, যা যায় তা ক্রেডিট', 'গ্রহীতাকে ডেবিট, দাতাকে ক্রেডিট', 'আয় ডেবিট, ব্যয় ক্রেডিট',
-                'দায় বৃদ্ধি ডেবিট'
-            ],
-            answer: 0,
-            explanation: 'সম্পদবাচক হিসাবে যা প্রতিষ্ঠানে আসে তা ডেবিট এবং যা প্রতিষ্ঠান থেকে যায় তা ক্রেডিট করা হয়।'
-        }, {
-            q: 'নামিক হিসাবের (Nominal Account) নিয়ম কোনটি?',
-            options: ['সকল খরচ ও ক্ষতি ডেবিট, সকল আয় ও লাভ ক্রেডিট', 'যা আসে তা ডেবিট', 'গ্রহীতাকে ক্রেডিট',
-                'দায় হ্রাস ডেবিট'
-            ],
-            answer: 0,
-            explanation: 'নামিক হিসাবে ব্যবসায়ের সকল প্রকার ব্যয় ও ক্ষতি ডেবিট এবং সকল প্রকার আয় ও লাভ ক্রেডিট করা হয়।'
-        }, {
-            q: 'দ্বৈত সত্তা (Dual Aspect) নীতি অনুযায়ী প্রতিটি লেনদেনের কয়টি দিক থাকে?',
-            options: ['১টি', '২টি', '৩টি', '৪টি'],
-            answer: 1,
-            explanation: 'এই নীতি অনুযায়ী প্রতিটি লেনদেনের দুটি দিক থাকে — একটি ডেবিট ও একটি ক্রেডিট, যা দ্বৈত-এন্ট্রি পদ্ধতির ভিত্তি।'
-        }, {
-            q: 'মিলকরণ নীতি (Matching Concept) কী বোঝায়?',
-            options: ['একটি হিসাবকালের আয়ের সাথে সেই আয় অর্জনে ব্যয়িত খরচ মিলিয়ে দেখানো', 'সকল সম্পদ ও দায় সমান রাখা',
-                'নগদ প্রাপ্তি ও প্রদান মিলানো', 'শুধু নগদ লেনদেন লিপিবদ্ধ করা'
-            ],
-            answer: 0,
-            explanation: 'মিলকরণ নীতি অনুযায়ী একটি নির্দিষ্ট হিসাবকালের আয়ের সাথে সেই আয় অর্জনের জন্য ব্যয়িত খরচ মিলিয়ে নিট লাভ-ক্ষতি নির্ণয় করা হয়।'
-        }, {
-            q: 'প্রণিধিভিত্তিক নীতি (Accrual Concept) অনুযায়ী আয় ও ব্যয় স্বীকৃত হয় কখন?',
-            options: ['নগদ পাওয়া বা প্রদানের সময়', 'অর্জিত বা সংঘটিত হওয়ার সময়, নগদ লেনদেনের সময় নির্বিশেষে',
-                'বছরের শেষে', 'চুক্তি স্বাক্ষরের সময়'
-            ],
-            answer: 1,
-            explanation: 'প্রণিধিভিত্তিক (Accrual) নীতিতে আয় অর্জিত হওয়ার সাথে সাথেই এবং ব্যয় সংঘটিত হওয়ার সাথে সাথেই হিসাবভুক্ত করা হয়, নগদ আদান-প্রদান নির্বিশেষে।'
-        }, {
-            q: 'ধারাবাহিকতার নীতি (Consistency Concept) অনুযায়ী —',
-            options: ['প্রতি বছর ভিন্ন হিসাব পদ্ধতি ব্যবহার করা যায়', 'একবার গৃহীত হিসাব পদ্ধতি প্রতি বছর অনুসরণ করতে হয়',
-                'হিসাব পদ্ধতি মালিকের ইচ্ছামতো বদলানো যায়', 'কোনো নিয়ম নেই'
-            ],
-            answer: 1,
-            explanation: 'তুলনাযোগ্যতা বজায় রাখতে একবার গৃহীত হিসাবরীতি ও পদ্ধতি প্রতিটি হিসাবকালে একইভাবে অনুসরণ করতে হয়।'
-        }, {
-            q: 'বস্তুনিষ্ঠতার নীতি (Materiality Concept) অনুযায়ী —',
-            options: ['সব ছোট-বড় লেনদেন সমান গুরুত্ব সহকারে দেখাতে হয়', 'গুরুত্বপূর্ণ ও তুলনামূলক বড় অঙ্কের বিষয় আলাদাভাবে প্রকাশ করতে হয়',
-                'শুধু বড় প্রতিষ্ঠানে প্রযোজ্য', 'ক্ষুদ্র লেনদেন লিপিবদ্ধ করা যাবে না'
-            ],
-            answer: 1,
-            explanation: 'বস্তুনিষ্ঠতার নীতি অনুযায়ী আর্থিক বিবরণীতে গুরুত্বপূর্ণ তথ্য যথাযথভাবে প্রকাশ করতে হয়, যাতে ব্যবহারকারীদের সিদ্ধান্তে প্রভাব পড়ে এমন কিছু বাদ না যায়।'
-        }, {
-            q: 'পূর্ণ প্রকাশনার নীতি (Full Disclosure Concept) অনুযায়ী —',
-            options: ['আর্থিক বিবরণীতে সকল গুরুত্বপূর্ণ তথ্য প্রকাশ করতে হয়', 'শুধু লাভ প্রকাশ করতে হয়',
-                'তথ্য গোপন রাখা যায়', 'শুধু মালিককে জানাতে হয়'
-            ],
-            answer: 0,
-            explanation: 'এই নীতি অনুযায়ী ব্যবহারকারীদের সিদ্ধান্ত গ্রহণে সহায়ক সকল প্রাসঙ্গিক তথ্য আর্থিক বিবরণীতে বা পাদটীকায় প্রকাশ করতে হয়।'
-        }, {
-            q: 'ঐতিহাসিক ব্যয় নীতি (Historical Cost Concept) অনুযায়ী সম্পদ হিসাবভুক্ত হয় —',
-            options: ['বর্তমান বাজারমূল্যে', 'ক্রয়মূল্যে', 'অনুমিত মূল্যে', 'ভবিষ্যৎ মূল্যে'],
-            answer: 1,
-            explanation: 'এই নীতি অনুযায়ী সম্পদ তার প্রকৃত ক্রয়মূল্যে হিসাবভুক্ত করা হয়, বাজারমূল্য পরিবর্তিত হলেও তা পরিবর্তন করা হয় না।'
-        }, {
-            q: 'হিসাববিজ্ঞানের কোন গুণগত বৈশিষ্ট্য অনুযায়ী তথ্য ভুলমুক্ত ও নির্ভরযোগ্য হতে হয়?',
-            options: ['প্রাসঙ্গিকতা (Relevance)', 'নির্ভরযোগ্যতা (Reliability)', 'তুলনাযোগ্যতা (Comparability)',
-                'বোধগম্যতা (Understandability)'
-            ],
-            answer: 1,
-            explanation: 'নির্ভরযোগ্যতা গুণ অনুযায়ী হিসাব তথ্য নির্ভুল, যাচাইযোগ্য ও পক্ষপাতমুক্ত হতে হয়, যাতে ব্যবহারকারী তার উপর আস্থা রাখতে পারেন।'
-        }, {
-            q: 'একই ধরনের প্রতিষ্ঠানের আর্থিক বিবরণী পাশাপাশি রেখে বিশ্লেষণ করা যায় হিসাববিজ্ঞানের কোন গুণের কারণে?',
-            options: ['তুলনাযোগ্যতা', 'যাচাইযোগ্যতা', 'সময়োপযোগিতা', 'প্রাসঙ্গিকতা'],
-            answer: 0,
-            explanation: 'তুলনাযোগ্যতা গুণের কারণে একই শিল্পের বিভিন্ন প্রতিষ্ঠানের বা একই প্রতিষ্ঠানের বিভিন্ন বছরের আর্থিক ফলাফল তুলনা করা সম্ভব হয়।'
-        }, {
-            q: 'একতরফা দাখিলা পদ্ধতি (Single Entry System) এর বৈশিষ্ট্য কোনটি?',
-            options: ['প্রতিটি লেনদেনের দুটি দিক লিপিবদ্ধ হয়', 'অসম্পূর্ণ পদ্ধতি, শুধু নগদ ও ব্যক্তিগত হিসাব রাখা হয়',
-                'রেওয়ামিল সবসময় মিলে', 'বড় প্রতিষ্ঠানের জন্য বাধ্যতামূলক'
-            ],
-            answer: 1,
-            explanation: 'একতরফা দাখিলা একটি অসম্পূর্ণ পদ্ধতি, যেখানে সাধারণত শুধু নগদ ও ব্যক্তিগত হিসাব রাখা হয়, তাই এতে হিসাবের যথার্থতা যাচাই করা কঠিন।'
-        }, {
-            q: 'দ্বৈত দাখিলা পদ্ধতির (Double Entry System) সুবিধা কোনটি?',
-            options: ['প্রতিটি লেনদেনের সম্পূর্ণ ও নির্ভুল হিসাব রাখা যায়', 'শুধু ছোট দোকানে ব্যবহারযোগ্য',
-                'হিসাব রাখা সহজ হয় না', 'রেওয়ামিল তৈরির প্রয়োজন হয় না'
-            ],
-            answer: 0,
-            explanation: 'দ্বৈত দাখিলা পদ্ধতিতে প্রতিটি লেনদেনের দুটি দিক লিপিবদ্ধ হওয়ায় হিসাবের যথার্থতা যাচাই করা যায় এবং সম্পূর্ণাঙ্গ আর্থিক চিত্র পাওয়া যায়।'
-        }, {
-            q: 'জাবেদা (Journal) কে কেন "প্রাথমিক হিসাব বই" বলা হয়?',
-            options: ['এখানেই সর্বপ্রথম লেনদেন তারিখ অনুযায়ী লিপিবদ্ধ হয়', 'এটি সবচেয়ে শেষে তৈরি হয়',
-                'এতে শুধু নগদ লেনদেন থাকে', 'এটি ব্যাংক ব্যবহার করে'
-            ],
-            answer: 0,
-            explanation: 'লেনদেন সংঘটিত হওয়ার সাথে সাথে তারিখ অনুযায়ী প্রথমে যে বইতে লিপিবদ্ধ করা হয় তাকে জাবেদা বলে, তাই একে প্রাথমিক হিসাব বই বলা হয়।'
-        }, {
-            q: 'খতিয়ান (Ledger) কে "চূড়ান্ত হিসাব বই" বলার কারণ কী?',
-            options: ['জাবেদার তথ্য শ্রেণিবদ্ধভাবে সংক্ষিপ্ত আকারে এখানে স্থানান্তরিত হয়', 'এটি সবার আগে তৈরি হয়',
-                'এতে কোনো হিসাব থাকে না', 'শুধু ব্যাংকের জন্য ব্যবহৃত হয়'
-            ],
-            answer: 0,
-            explanation: 'জাবেদাভুক্ত লেনদেনগুলো সংশ্লিষ্ট হিসাব অনুযায়ী শ্রেণিবদ্ধ করে খতিয়ানে স্থানান্তর করা হয় বলে একে চূড়ান্ত হিসাব বই বলা হয়।'
-        }, {
-            q: 'রেওয়ামিল (Trial Balance) তৈরির উদ্দেশ্য কী?',
-            options: ['খতিয়ানের ডেবিট ও ক্রেডিট উদ্বৃত্তের গাণিতিক নির্ভুলতা যাচাই করা', 'মুনাফা নির্ণয় করা',
-                'নতুন লেনদেন তৈরি করা', 'কর্মীর বেতন হিসাব করা'
-            ],
-            answer: 0,
-            explanation: 'রেওয়ামিলের মাধ্যমে সকল হিসাবের ডেবিট ও ক্রেডিট উদ্বৃত্তের সমষ্টি মিলিয়ে হিসাবের গাণিতিক নির্ভুলতা যাচাই করা হয়।'
-        }, {
-            q: 'আর্থিক হিসাববিজ্ঞানের (Financial Accounting) মূল উদ্দেশ্য কী?',
-            options: ['প্রতিষ্ঠানের সামগ্রিক আর্থিক অবস্থা ও ফলাফল বহিঃস্থ ব্যবহারকারীদের জানানো', 'শুধু পণ্যের ব্যয় নির্ণয় করা',
-                'শুধু বাজেট তৈরি করা', 'শুধু কর্মী নিয়োগ পরিকল্পনা করা'
-            ],
-            answer: 0,
-            explanation: 'আর্থিক হিসাববিজ্ঞান প্রতিষ্ঠানের সামগ্রিক আয়-ব্যয় ও আর্থিক অবস্থার তথ্য প্রস্তুত করে যা মালিক, বিনিয়োগকারী, পাওনাদারসহ বহিঃস্থ ব্যবহারকারীদের কাজে লাগে।'
-        }, {
-            q: 'ব্যয় হিসাববিজ্ঞানের (Cost Accounting) প্রধান কাজ কী?',
-            options: ['পণ্য বা সেবার উৎপাদন ব্যয় নির্ণয় ও নিয়ন্ত্রণ করা', 'শুধু কর হিসাব করা', 'শুধু বিক্রয় মূল্য নির্ধারণ করা',
-                'শুধু মজুরি প্রদান করা'
-            ],
-            answer: 0,
-            explanation: 'ব্যয় হিসাববিজ্ঞান একক প্রতি বা মোট উৎপাদন ব্যয় নির্ণয় করে এবং ব্যয় নিয়ন্ত্রণ ও হ্রাসের উপায় বিশ্লেষণ করে।'
-        }, {
-            q: 'ব্যবস্থাপনা হিসাববিজ্ঞানের (Management Accounting) তথ্য প্রধানত কাদের জন্য প্রস্তুত করা হয়?',
-            options: ['অভ্যন্তরীণ ব্যবস্থাপকদের সিদ্ধান্ত গ্রহণের জন্য', 'শুধু সরকারের জন্য', 'শুধু পাওনাদারদের জন্য',
-                'শুধু সাধারণ জনগণের জন্য'
-            ],
-            answer: 0,
-            explanation: 'ব্যবস্থাপনা হিসাববিজ্ঞান পরিকল্পনা, নিয়ন্ত্রণ ও সিদ্ধান্ত গ্রহণে সহায়তার জন্য প্রতিষ্ঠানের অভ্যন্তরীণ ব্যবস্থাপকদের উদ্দেশ্যে তথ্য প্রস্তুত করে।'
-        }, {
-            q: 'নিচের কোনটি হিসাববিজ্ঞান তথ্যের বহিঃস্থ ব্যবহারকারী?',
-            options: ['ব্যবস্থাপনা পরিচালক', 'পাওনাদার (Creditor)', 'বিভাগীয় প্রধান', 'অভ্যন্তরীণ নিরীক্ষক'],
-            answer: 1,
-            explanation: 'পাওনাদার প্রতিষ্ঠানের বাইরের পক্ষ, যিনি ঋণ পরিশোধের সামর্থ্য যাচাই করতে হিসাব তথ্য ব্যবহার করেন — তাই তিনি বহিঃস্থ ব্যবহারকারী।'
-        }, {
-            q: 'সরকার হিসাববিজ্ঞানের তথ্য প্রধানত কী কাজে ব্যবহার করে?',
-            options: ['কর নির্ধারণ ও অর্থনৈতিক নীতি প্রণয়নে', 'পণ্যের গুণমান যাচাইয়ে', 'কর্মী নিয়োগে', 'বিজ্ঞাপন তৈরিতে'],
-            answer: 0,
-            explanation: 'সরকার আয়কর, ভ্যাটসহ বিভিন্ন কর নির্ধারণ এবং অর্থনৈতিক পরিকল্পনা প্রণয়নে প্রতিষ্ঠানের হিসাব তথ্য ব্যবহার করে।'
-        }, {
-            q: 'বিনিয়োগকারীরা হিসাব তথ্য ব্যবহার করেন কেন?',
-            options: ['বিনিয়োগের ঝুঁকি ও মুনাফা সম্ভাবনা যাচাই করতে', 'পণ্য উৎপাদনের জন্য', 'কর্মী ছাঁটাইয়ের জন্য',
-                'বিজ্ঞাপনের জন্য'
-            ],
-            answer: 0,
-            explanation: 'বিনিয়োগকারীরা প্রতিষ্ঠানের আর্থিক বিবরণী দেখে বিনিয়োগের ঝুঁকি ও সম্ভাব্য মুনাফা মূল্যায়ন করে সিদ্ধান্ত নেন।'
-        }, {
-            q: 'হিসাববিজ্ঞানের সীমাবদ্ধতা হিসেবে নিচের কোনটি সঠিক?',
-            options: ['সকল ঘটনা হিসাবভুক্ত হয়, আর্থিক হোক বা অনার্থিক', 'অনার্থিক ঘটনা (যেমন কর্মীর দক্ষতা) হিসাবভুক্ত হয় না',
-                'হিসাববিজ্ঞানে কোনো সীমাবদ্ধতা নেই', 'এটি সবসময় ভবিষ্যৎ পূর্বাভাস দেয়'
-            ],
-            answer: 1,
-            explanation: 'হিসাববিজ্ঞান শুধু আর্থিক মূল্যে প্রকাশযোগ্য ঘটনা লিপিবদ্ধ করে, কর্মীর দক্ষতা বা সুনামের মতো অনার্থিক বিষয় এতে প্রতিফলিত হয় না — এটি একটি সীমাবদ্ধতা।'
-        }, {
-            q: 'বাংলাদেশে হিসাববিজ্ঞান পেশার প্রধান পেশাজীবী সংস্থা কোনটি?',
-            options: ['ICAB (দ্য ইনস্টিটিউট অব চার্টার্ড অ্যাকাউন্ট্যান্টস অব বাংলাদেশ)', 'বাংলাদেশ ব্যাংক', 'দুদক',
-                'এনবিআর'
-            ],
-            answer: 0,
-            explanation: 'ICAB বাংলাদেশে চার্টার্ড অ্যাকাউন্ট্যান্ট পেশাজীবী তৈরি ও নিয়ন্ত্রণকারী প্রধান সংস্থা, যা হিসাব নিরীক্ষা ও পেশাগত মান নির্ধারণ করে।'
-        }, {
-            q: 'ব্যয় ও ব্যবস্থাপনা হিসাববিজ্ঞানীদের বাংলাদেশি পেশাজীবী সংস্থার নাম কী?',
-            options: ['ICMAB', 'BSEC', 'NBR', 'DSE'],
-            answer: 0,
-            explanation: 'ICMAB (দ্য ইনস্টিটিউট অব কস্ট অ্যান্ড ম্যানেজমেন্ট অ্যাকাউন্ট্যান্টস অব বাংলাদেশ) দেশের ব্যয় ও ব্যবস্থাপনা হিসাববিজ্ঞান পেশাজীবীদের সংস্থা।'
-        }, {
-            q: 'বাংলাদেশে সরকারি হিসাবের অর্থবছর সাধারণত কোন সময়কাল অনুসরণ করে?',
-            options: ['জানুয়ারি–ডিসেম্বর', 'জুলাই–জুন', 'এপ্রিল–মার্চ', 'অক্টোবর–সেপ্টেম্বর'],
-            answer: 1,
-            explanation: 'বাংলাদেশে সরকারি ও বেশিরভাগ প্রাতিষ্ঠানিক হিসাবকাল ১ জুলাই থেকে পরবর্তী বছরের ৩০ জুন পর্যন্ত ধরা হয়।'
-        }, {
-            q: 'কম্পিউটারাইজড হিসাববিজ্ঞান পদ্ধতির সুবিধা কোনটি?',
-            options: ['দ্রুত, নির্ভুল হিসাব ও সহজে প্রতিবেদন তৈরি', 'তথ্য নষ্ট হওয়ার কোনো ঝুঁকি নেই', 'মানুষের প্রয়োজন হয় না',
-                'শুধু বড় প্রতিষ্ঠানে ব্যবহারযোগ্য'
-            ],
-            answer: 0,
-            explanation: 'কম্পিউটারাইজড হিসাব পদ্ধতিতে গণনার ভুল কমে, তথ্য দ্রুত প্রক্রিয়াকরণ হয় এবং সহজে বিভিন্ন প্রতিবেদন তৈরি করা যায়।'
-        }, {
-            q: 'হিসাববিজ্ঞানের কোন বৈশিষ্ট্য অনুযায়ী শুধু আর্থিক মূল্যে প্রকাশযোগ্য লেনদেন লিপিবদ্ধ হয়?',
-            options: ['অর্থমূল্যে পরিমাপযোগ্যতা', 'তুলনাযোগ্যতা', 'যাচাইযোগ্যতা', 'ধারাবাহিকতা'],
-            answer: 0,
-            explanation: 'হিসাববিজ্ঞানের একটি মৌলিক বৈশিষ্ট্য হলো শুধুমাত্র সেসব লেনদেন লিপিবদ্ধ হয় যা টাকার অঙ্কে পরিমাপ করা সম্ভব।'
-        }, {
-            q: 'উইন্ডো ড্রেসিং (Window Dressing) বলতে কী বোঝায়?',
-            options: ['আর্থিক বিবরণীকে প্রকৃত অবস্থার চেয়ে ভালো দেখানোর প্রবণতা', 'অফিস সাজানো', 'হিসাব বই বাঁধাই করা',
-                'কম্পিউটারে হিসাব রাখা'
-            ],
-            answer: 0,
-            explanation: 'উইন্ডো ড্রেসিং হলো প্রতিষ্ঠানের প্রকৃত আর্থিক অবস্থাকে কৃত্রিমভাবে ভালো দেখানোর প্রবণতা, যা হিসাববিজ্ঞানের একটি সম্ভাব্য অপব্যবহার তথা সীমাবদ্ধতা।'
-        }, {
-            q: 'অর্থমূল্যে পরিমাপযোগ্যতার নীতি অনুযায়ী নিচের কোনটি হিসাবভুক্ত হবে না?',
-            options: ['পণ্য ক্রয় ২০,০০০ টাকা', 'ব্যবস্থাপকের ভালো নেতৃত্বগুণ', 'বেতন প্রদান ১৫,০০০ টাকা',
-                'যন্ত্রপাতি ক্রয় ৫০,০০০ টাকা'
-            ],
-            answer: 1,
-            explanation: 'নেতৃত্বগুণের মতো বিষয় টাকায় পরিমাপ করা যায় না বলে তা হিসাবভুক্ত হয় না; বাকিগুলো আর্থিক মূল্যে প্রকাশযোগ্য বলে হিসাবভুক্ত হয়।'
-        }, {
-            q: 'আর্থিক বিবরণীর (Financial Statements) অন্তর্ভুক্ত নয় কোনটি?',
-            options: ['আয় বিবরণী', 'আর্থিক অবস্থার বিবরণী (উদ্বৃত্তপত্র)', 'নগদ প্রবাহ বিবরণী', 'বিপণন পরিকল্পনা'],
-            answer: 3,
-            explanation: 'আর্থিক বিবরণীর প্রধান অংশ আয় বিবরণী, উদ্বৃত্তপত্র ও নগদ প্রবাহ বিবরণী; বিপণন পরিকল্পনা হিসাববিজ্ঞানের আর্থিক বিবরণীর অংশ নয়।'
-        }, {
-            q: 'হিসাববিজ্ঞান তথ্য কোন গুণের কারণে সময়মতো ব্যবহারকারীর কাছে পৌঁছানো জরুরি?',
-            options: ['সময়োপযোগিতা (Timeliness)', 'রক্ষণশীলতা', 'ঐতিহাসিক ব্যয়', 'দ্বৈত সত্তা'],
-            answer: 0,
-            explanation: 'সময়োপযোগিতা গুণ অনুযায়ী তথ্য সিদ্ধান্ত গ্রহণের আগে যথাসময়ে সরবরাহ না হলে তার উপযোগিতা কমে যায়, তাই এটি গুরুত্বপূর্ণ।'
-        }, {
-            q: 'যাচাইযোগ্যতা (Verifiability) গুণ অনুযায়ী হিসাব তথ্য কেমন হওয়া উচিত?',
-            options: ['প্রমাণ বা দলিলের ভিত্তিতে যাচাই করা সম্ভব', 'শুধু অনুমানের ভিত্তিতে তৈরি', 'গোপনীয় রাখা',
-                'শুধু মৌখিক'
-            ],
-            answer: 0,
-            explanation: 'যাচাইযোগ্যতা গুণ অনুযায়ী হিসাব তথ্য প্রমাণপত্র বা দলিলের সাহায্যে স্বাধীনভাবে যাচাই করা সম্ভব হতে হয়, যা তথ্যের নির্ভরযোগ্যতা বাড়ায়।'
-        }, {
-            q: 'হিসাববিজ্ঞান প্রক্রিয়ার শেষ ধাপ হিসেবে কোনটিকে ধরা হয়?',
-            options: ['লিপিবদ্ধকরণ', 'শ্রেণিবদ্ধকরণ', 'বিশ্লেষণ ও ব্যাখ্যাসহ প্রতিবেদন উপস্থাপন', 'সংক্ষিপ্তকরণ'],
-            answer: 2,
-            explanation: 'হিসাববিজ্ঞান প্রক্রিয়া লিপিবদ্ধকরণ, শ্রেণিবদ্ধকরণ ও সংক্ষিপ্তকরণের পর তথ্য বিশ্লেষণ, ব্যাখ্যা ও ব্যবহারকারীদের কাছে প্রতিবেদন আকারে উপস্থাপনের মধ্য দিয়ে শেষ হয়।'
-        }, {
-            q: 'সমাপনী মজুদ পণ্য কোন ধরনের হিসাবের উদাহরণ?',
-            options: ['ব্যক্তিবাচক হিসাব', 'সম্পদবাচক হিসাব', 'নামিক হিসাব', 'দায়বাচক হিসাব'],
-            answer: 1,
-            explanation: 'মজুদ পণ্য প্রতিষ্ঠানের একটি সম্পদ, তাই এটি সম্পদবাচক (Real) হিসাবের অন্তর্ভুক্ত এবং "যা আসে ডেবিট, যা যায় ক্রেডিট" নিয়ম প্রযোজ্য।'
-        }, ];
+        <!-- বিষয় তালিকা -->
+        <div class="subjects-section">
+            <h2 class="section-title">
+                <i class="fas fa-book"></i> ব্যবসায় শাখার বিষয়সমূহ
+            </h2>
+            <div class="subjects-grid">
+                <div class="subject-card" onclick="showSubject('accounting')">
+                    <div class="subject-icon" style="background: linear-gradient(135deg, #667eea, #764ba2)">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>হিসাববিজ্ঞান</h3>
+                    <p>১১টি অধ্যায়</p>
+                    <span class="question-count">৩৩০+ প্রশ্ন</span>
+                </div>
+                <div class="subject-card" onclick="showSubject('business')">
+                    <div class="subject-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c)">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>ব্যবসায় সংগঠন ও ব্যবস্থাপনা</h3>
+                    <p>১২টি অধ্যায়</p>
+                    <span class="question-count">৩৬০+ প্রশ্ন</span>
+                </div>
+                <div class="subject-card" onclick="showSubject('finance')">
+                    <div class="subject-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe)">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>ফিন্যান্স, ব্যাংকিং ও বিমা</h3>
+                    <p>১০টি অধ্যায়</p>
+                    <span class="question-count">৩০০+ প্রশ্ন</span>
+                </div>
+                <div class="subject-card" onclick="showSubject('marketing')">
+                    <div class="subject-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7)">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>উৎপাদন ব্যবস্থাপনা ও বিপণন</h3>
+                    <p>১০টি অধ্যায়</p>
+                    <span class="question-count">৩০০+ প্রশ্ন</span>
+                </div>
+            </div>
+        </div>
 
-        // ============================================================
-        //  STATE
-        // ============================================================
-        let state = {
-            screen: 'home', // home | chapters | study | favorites | exam | result
-            favorites: {}, // { index: true }
-            revealed: {}, // { index: true }
-            studyPicked: {}, // { index: optionIndex }
-            examAnswers: {}, // { index: optionIndex }
-            examIndex: 0,
-            timeLeft: 10 * 60, // seconds
-            timerInterval: null,
-        };
+        <!-- লিডারবোর্ড -->
+        <div class="leaderboard-section">
+            <h2 class="section-title">
+                <i class="fas fa-trophy"></i> লিডারবোর্ড
+            </h2>
+            <div class="leaderboard-list">
+                <div class="leader-item gold">
+                    <span class="rank">🥇</span>
+                    <span class="name">রাহেলা আক্তার</span>
+                    <span class="score">৯৮৫ পয়েন্ট</span>
+                </div>
+                <div class="leader-item silver">
+                    <span class="rank">🥈</span>
+                    <span class="name">করিম হোসেন</span>
+                    <span class="score">৯৪২ পয়েন্ট</span>
+                </div>
+                <div class="leader-item bronze">
+                    <span class="rank">🥉</span>
+                    <span class="name">সুমাইয়া বেগম</span>
+                    <span class="score">৮৯৭ পয়েন্ট</span>
+                </div>
+            </div>
+        </div>
 
-        // ============================================================
-        //  DOM REFS
-        // ============================================================
-        const screens = {
-            home: document.getElementById('screen-home'),
-            chapters: document.getElementById('screen-chapters'),
-            study: document.getElementById('screen-study'),
-            favorites: document.getElementById('screen-favorites'),
-            exam: document.getElementById('screen-exam'),
-            result: document.getElementById('screen-result'),
-        };
+        <!-- ফুটার -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://facebook.com" target="_blank">
+                    <i class="fab fa-facebook"></i> Facebook
+                </a>
+                <a href="https://wa.me/8801700000000" target="_blank">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+            </div>
+            <p>© 2024 Medha MCQ | সকল অধিকার সংরক্ষিত</p>
+        </footer>
+    </div>
 
-        const studyListEl = document.getElementById('study-mcq-list');
-        const favoritesListEl = document.getElementById('favorites-list');
-        const favCountEl = document.getElementById('fav-count');
-        const favStarIcon = document.getElementById('fav-star-icon');
+    <!-- বিষয় পেজ -->
+    <div id="subject-page" class="page hidden">
+        <nav class="navbar">
+            <button class="back-btn" onclick="showPage('home-page')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="nav-logo">
+                <span id="subject-title">হিসাববিজ্ঞান</span>
+            </div>
+            <div class="nav-right">
+                <button class="dark-mode-btn" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
 
-        const examProgressEl = document.getElementById('exam-progress');
-        const examTimerEl = document.getElementById('exam-timer');
-        const examQuestionCard = document.getElementById('exam-question-card');
-        const examPrevBtn = document.getElementById('exam-prev-btn');
-        const examNextBtn = document.getElementById('exam-next-btn');
+        <div class="chapters-section">
+            <h2 class="section-title">অধ্যায়সমূহ</h2>
+            <div id="chapters-list" class="chapters-grid"></div>
+        </div>
+    </div>
 
-        const resultScoreEl = document.getElementById('result-score');
-        const resultMessageEl = document.getElementById('result-message');
+    <!-- MCQ পড়ার পেজ -->
+    <div id="mcq-read-page" class="page hidden">
+        <nav class="navbar">
+            <button class="back-btn" onclick="goBackToChapters()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="nav-logo">
+                <span id="chapter-title">অধ্যায় ১</span>
+            </div>
+            <div class="nav-right">
+                <button class="exam-btn" onclick="startExam()">
+                    <i class="fas fa-pen"></i> পরীক্ষা দাও
+                </button>
+            </div>
+        </nav>
 
-        // ============================================================
-        //  HELPERS
-        // ============================================================
-        function getFavoritesList() {
-            const list = [];
-            for (const key in state.favorites) {
-                if (state.favorites[key]) {
-                    list.push(parseInt(key));
-                }
-            }
-            return list.sort((a, b) => a - b);
-        }
+        <div class="mcq-list" id="mcq-list"></div>
+    </div>
 
-        function getFavCount() {
-            return getFavoritesList().length;
-        }
+    <!-- পরীক্ষার পেজ -->
+    <div id="exam-page" class="page hidden">
+        <nav class="navbar">
+            <div class="nav-logo">
+                <span>পরীক্ষা চলছে</span>
+            </div>
+            <div class="timer-display">
+                <i class="fas fa-clock"></i>
+                <span id="timer">30:00</span>
+            </div>
+        </nav>
 
-        function formatTime(seconds) {
-            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-            const s = String(seconds % 60).padStart(2, '0');
-            return m + ':' + s;
-        }
+        <div class="exam-progress">
+            <div class="progress-bar">
+                <div id="exam-progress-fill" class="progress-fill"></div>
+            </div>
+            <span id="question-counter">প্রশ্ন ১/৩০</span>
+        </div>
 
-        // ============================================================
-        //  NAVIGATION
-        // ============================================================
-        function goTo(screen) {
-            // Stop timer if leaving exam
-            if (state.screen === 'exam' && screen !== 'exam') {
-                if (state.timerInterval) {
-                    clearInterval(state.timerInterval);
-                    state.timerInterval = null;
-                }
-            }
+        <div class="exam-container">
+            <div class="question-box">
+                <p id="exam-question"></p>
+            </div>
+            <div id="exam-options" class="options-container"></div>
+            <div class="exam-navigation">
+                <button id="prev-btn" onclick="prevQuestion()" class="nav-exam-btn">
+                    <i class="fas fa-arrow-left"></i> আগের প্রশ্ন
+                </button>
+                <button id="next-btn" onclick="nextQuestion()" class="nav-exam-btn primary">
+                    পরের প্রশ্ন <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="submit-btn" onclick="submitExam()" class="nav-exam-btn success hidden">
+                    জমা দাও <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-            // If going to result from exam, stop timer
-            if (screen === 'result') {
-                if (state.timerInterval) {
-                    clearInterval(state.timerInterval);
-                    state.timerInterval = null;
-                }
-            }
+    <!-- ফলাফল পেজ -->
+    <div id="result-page" class="page hidden">
+        <div class="result-container">
+            <div class="result-header">
+                <div class="result-icon" id="result-icon">🎉</div>
+                <h2 id="result-title">চমৎকার!</h2>
+                <div class="result-score">
+                    <span id="result-marks">০</span>/৩০
+                </div>
+                <p id="result-percentage">০%</p>
+            </div>
+            <div class="result-details">
+                <div class="result-stat correct">
+                    <i class="fas fa-check"></i>
+                    <span id="correct-count">০</span>
+                    <p>সঠিক</p>
+                </div>
+                <div class="result-stat wrong">
+                    <i class="fas fa-times"></i>
+                    <span id="wrong-count">০</span>
+                    <p>ভুল</p>
+                </div>
+                <div class="result-stat skip">
+                    <i class="fas fa-minus"></i>
+                    <span id="skip-count">০</span>
+                    <p>বাদ</p>
+                </div>
+            </div>
+            <div class="result-buttons">
+                <button onclick="reviewAnswers()" class="review-btn">
+                    <i class="fas fa-eye"></i> উত্তর দেখো
+                </button>
+                <button onclick="showPage('home-page')" class="home-btn">
+                    <i class="fas fa-home"></i> হোমে যাও
+                </button>
+            </div>
+        </div>
+    </div>
 
-            state.screen = screen;
-            render();
-        }
+    <!-- লগিন পেজ -->
+    <div id="login-page" class="page hidden">
+        <nav class="navbar">
+            <button class="back-btn" onclick="showPage('home-page')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="nav-logo">লগিন</div>
+        </nav>
+        <div class="login-container">
+            <div class="login-card">
+                <h2><i class="fas fa-user-circle"></i> Medha MCQ তে স্বাগতম</h2>
+                <button class="google-login-btn" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i> Google দিয়ে লগিন
+                </button>
+                <div class="divider">অথবা</div>
+                <input type="tel" placeholder="ফোন নম্বর দিন" class="login-input">
+                <input type="password" placeholder="পাসওয়ার্ড দিন" class="login-input">
+                <button class="login-submit-btn">লগিন করুন</button>
+                <p class="login-skip" onclick="showPage('home-page')">
+                    লগিন ছাড়া পড়ুন →
+                </p>
+            </div>
+        </div>
+    </div>
 
-        // ============================================================
-        //  STUDY: toggle favorite, pick answer
-        // ============================================================
-        function toggleFav(index) {
-            state.favorites[index] = !state.favorites[index];
-            renderStudy();
-            updateFavBadge();
-        }
+    <!-- বিজ্ঞাপন মডাল -->
+    <div id="ad-modal" class="modal hidden">
+        <div class="modal-content ad-modal-content">
+            <h3><i class="fas fa-ad"></i> বিজ্ঞাপন দেখুন</h3>
+            <p>মাত্র ২টি বিজ্ঞাপন দেখুন এবং পরের <strong>১ ঘন্টা</strong> বিজ্ঞাপনমুক্ত পড়ুন!</p>
+            <div class="ad-placeholder">
+                <!-- AdMob বিজ্ঞাপন এখানে আসবে -->
+                <div class="fake-ad">বিজ্ঞাপন লোড হচ্ছে...</div>
+            </div>
+            <div class="ad-timer">
+                <span id="ad-countdown">৫</span> সেকেন্ড পরে বন্ধ করুন
+            </div>
+            <button id="close-ad-btn" class="close-ad-btn hidden" onclick="closeAd()">
+                বিজ্ঞাপন বন্ধ করুন ✓
+            </button>
+        </div>
+    </div>
 
-        function pickStudyAnswer(index, optionIndex) {
-            state.studyPicked[index] = optionIndex;
-            state.revealed[index] = true;
-            renderStudy();
-        }
-
-        // ============================================================
-        //  EXAM
-        // ============================================================
-        function startExam() {
-            state.examAnswers = {};
-            state.examIndex = 0;
-            state.timeLeft = 10 * 60;
-            if (state.timerInterval) {
-                clearInterval(state.timerInterval);
-                state.timerInterval = null;
-            }
-            state.screen = 'exam';
-            render();
-
-            // Start timer
-            state.timerInterval = setInterval(function() {
-                state.timeLeft = state.timeLeft - 1;
-                if (state.timeLeft <= 0) {
-                    state.timeLeft = 0;
-                    clearInterval(state.timerInterval);
-                    state.timerInterval = null;
-                    goTo('result');
-                    return;
-                }
-                updateExamTimer();
-            }, 1000);
-        }
-
-        function selectExamAnswer(qIndex, optIndex) {
-            state.examAnswers[qIndex] = optIndex;
-            renderExamQuestion();
-        }
-
-        function examPrev() {
-            if (state.examIndex > 0) {
-                state.examIndex = state.examIndex - 1;
-                renderExam();
-            }
-        }
-
-        function examNext() {
-            if (state.examIndex < MCQS.length - 1) {
-                state.examIndex = state.examIndex + 1;
-                renderExam();
-            } else {
-                // Last question: submit
-                if (state.timerInterval) {
-                    clearInterval(state.timerInterval);
-                    state.timerInterval = null;
-                }
-                goTo('result');
-            }
-        }
-
-        function calcScore() {
-            let s = 0;
-            for (const key in state.examAnswers) {
-                const idx = parseInt(key);
-                if (state.examAnswers[key] === MCQS[idx].answer) {
-                    s++;
-                }
-            }
-            return s;
-        }
-
-        // ============================================================
-        //  RENDER
-        // ============================================================
-        function render() {
-            // Hide all screens
-            for (const key in screens) {
-                screens[key].classList.remove('active');
-            }
-            // Show current
-            if (screens[state.screen]) {
-                screens[state.screen].classList.add('active');
-            }
-
-            switch (state.screen) {
-                case 'study':
-                    renderStudy();
-                    updateFavBadge();
-                    break;
-                case 'favorites':
-                    renderFavorites();
-                    break;
-                case 'exam':
-                    renderExam();
-                    break;
-                case 'result':
-                    renderResult();
-                    break;
-                case 'home':
-                case 'chapters':
-                    // nothing dynamic
-                    break;
-            }
-        }
-
-        // ---- STUDY ----
-        function renderStudy() {
-            let html = '';
-            MCQS.forEach((item, i) => {
-                const isFav = state.favorites[i] || false;
-                const picked = state.studyPicked[i];
-                const isRevealed = state.revealed[i] || false;
-
-                html += `<div class="rounded-2xl mb-4 p-4 ruled-bg border border-line">`;
-                html += `<div class="flex justify-between items-start gap-2 mb-3">`;
-                html +=
-                    `<p class="font-semibold leading-snug"><span style="color:var(--gold);">${i+1}.</span> ${item.q}</p>`;
-                html +=
-                    `<button onclick="toggleFav(${i})" class="shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="${isFav ? 'var(--gold)' : 'none'}" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;
-                html += `</div>`;
-
-                html += `<div class="space-y-2">`;
-                item.options.forEach((opt, oi) => {
-                    const isCorrect = oi === item.answer;
-                    const isPickedWrong = isRevealed && picked === oi && !isCorrect;
-                    const showCorrect = isRevealed && isCorrect;
-
-                    let bg = '#FFFFFF',
-                        border = 'var(--line)',
-                        badgeBg = 'var(--sand)',
-                        badgeColor = 'var(--dark-muted)';
-                    if (showCorrect) { bg = 'var(--moss)';
-                        border = 'var(--forest)';
-                        badgeBg = 'var(--forest)';
-                        badgeColor = 'var(--paper)'; }
-                    if (isPickedWrong) { bg = 'var(--rose)';
-                        border = 'var(--crimson)';
-                        badgeBg = 'var(--crimson)';
-                        badgeColor = 'var(--paper)'; }
-
-                    html += `<button onclick="pickStudyAnswer(${i},${oi})" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-left bubble" style="background:${bg};border:1.5px solid ${border};">`;
-                    html +=
-                        `<span class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0" style="background:${badgeBg};color:${badgeColor};">${OPTION_LABELS[oi]}</span>`;
-                    html += `<span class="flex-1">${opt}</span>`;
-                    if (showCorrect) {
-                        html +=
-                            `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-                    }
-                    if (isPickedWrong) {
-                        html +=
-                            `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--crimson)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-                    }
-                    html += `</button>`;
-                });
-                html += `</div>`;
-
-                if (isRevealed) {
-                    html +=
-                        `<div class="mt-3 flex items-start gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--crimson)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M15 9a3 3 0 1 0-6 0v6a3 3 0 0 0 6 0V9z"/><path d="M20 12a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8z"/></svg>`;
-                    html += `<p class="text-xs leading-relaxed" style="color:var(--dark-muted);">${item.explanation}</p>`;
-                    html += `</div>`;
-                }
-
-                html += `</div>`;
-            });
-            studyListEl.innerHTML = html;
-        }
-
-        // ---- FAVORITES ----
-        function renderFavorites() {
-            const favIndices = getFavoritesList();
-            let html = '';
-            if (favIndices.length === 0) {
-                html =
-                    `<div class="text-center py-16"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><p class="text-sm" style="color:var(--muted);">এখনো কোনো প্রশ্ন ফেভারিট করা হয়নি।<br />পড়ার সময় ★ চাপ দিয়ে প্রশ্ন সংরক্ষণ করো।</p></div>`;
-            } else {
-                favIndices.forEach((i) => {
-                    const item = MCQS[i];
-                    html += `<div class="rounded-2xl mb-4 p-4 ruled-bg border border-line">`;
-                    html += `<div class="flex justify-between items-start gap-2 mb-3">`;
-                    html += `<p class="font-semibold leading-snug">${item.q}</p>`;
-                    html +=
-                        `<button onclick="toggleFav(${i})"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;
-                    html += `</div>`;
-                    html += `<div class="space-y-2 mb-3">`;
-                    item.options.forEach((opt, oi) => {
-                        const isCorrect = oi === item.answer;
-                        const bg = isCorrect ? 'var(--moss)' : '#FFFFFF';
-                        const border = isCorrect ? 'var(--forest)' : 'var(--line)';
-                        const badgeBg = isCorrect ? 'var(--forest)' : 'var(--sand)';
-                        const badgeColor = isCorrect ? 'var(--paper)' : 'var(--dark-muted)';
-                        html +=
-                            `<div class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm" style="background:${bg};border:1.5px solid ${border};">`;
-                        html +=
-                            `<span class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0" style="background:${badgeBg};color:${badgeColor};">${OPTION_LABELS[oi]}</span>`;
-                        html += `${opt}`;
-                        html += `</div>`;
-                    });
-                    html += `</div>`;
-                    html +=
-                        `<div class="flex items-start gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--crimson)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M15 9a3 3 0 1 0-6 0v6a3 3 0 0 0 6 0V9z"/><path d="M20 12a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8z"/></svg>`;
-                    html += `<p class="text-xs leading-relaxed" style="color:var(--dark-muted);">${item.explanation}</p>`;
-                    html += `</div>`;
-                    html += `</div>`;
-                });
-            }
-            favoritesListEl.innerHTML = html;
-        }
-
-        // ---- EXAM ----
-        function renderExam() {
-            updateExamProgress();
-            updateExamTimer();
-            renderExamQuestion();
-            updateExamButtons();
-        }
-
-        function renderExamQuestion() {
-            const idx = state.examIndex;
-            const item = MCQS[idx];
-            const selected = state.examAnswers[idx];
-
-            let html = `<p class="font-semibold leading-relaxed mb-4"><span style="color:var(--gold);">${idx+1}.</span> ${item.q} <span class="text-xs font-normal ml-2" style="color:var(--muted);">(মান: ১)</span></p>`;
-            html += `<div class="space-y-3">`;
-            item.options.forEach((opt, oi) => {
-                const isSelected = selected === oi;
-                const bg = isSelected ? 'var(--forest)' : '#FFFFFF';
-                const border = isSelected ? 'var(--forest)' : 'var(--line)';
-                const color = isSelected ? 'var(--paper)' : 'var(--ink)';
-                const badgeBg = isSelected ? 'var(--gold)' : 'var(--sand)';
-                const badgeColor = isSelected ? 'var(--ink)' : 'var(--dark-muted)';
-                html +=
-                    `<button onclick="selectExamAnswer(${idx},${oi})" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-left bubble" style="background:${bg};border:2px solid ${border};color:${color};">`;
-                html +=
-                    `<span class="w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold shrink-0" style="background:${badgeBg};color:${badgeColor};">${OPTION_LABELS[oi]}</span>`;
-                html += `${opt}`;
-                html += `</button>`;
-            });
-            html += `</div>`;
-            examQuestionCard.innerHTML = html;
-        }
-
-        function updateExamProgress() {
-            examProgressEl.textContent = 'প্রশ্ন ' + (state.examIndex + 1) + ' / ' + MCQS.length;
-        }
-
-        function updateExamTimer() {
-            examTimerEl.textContent = formatTime(state.timeLeft);
-            if (state.timeLeft <= 60) {
-                examTimerEl.style.color = '#FFD5D5';
-            } else {
-                examTimerEl.style.color = 'var(--paper)';
-            }
-        }
-
-        function updateExamButtons() {
-            if (state.examIndex === 0) {
-                examPrevBtn.disabled = true;
-                examPrevBtn.style.opacity = '0.4';
-            } else {
-                examPrevBtn.disabled = false;
-                examPrevBtn.style.opacity = '1';
-            }
-
-            if (state.examIndex === MCQS.length - 1) {
-                examNextBtn.textContent = 'জমা দাও';
-                examNextBtn.style.background = 'var(--crimson)';
-                examNextBtn.style.color = 'var(--paper)';
-            } else {
-                examNextBtn.textContent = 'পরের প্রশ্ন';
-                examNextBtn.style.background = 'var(--forest)';
-                examNextBtn.style.color = 'var(--paper)';
-            }
-        }
-
-        // ---- RESULT ----
-        function renderResult() {
-            const sc = calcScore();
-            const total = MCQS.length;
-            resultScoreEl.textContent = sc + '/' + total;
-            resultMessageEl.textContent = 'তুমি ' + total + 'টির মধ্যে ' + sc + 'টি সঠিক উত্তর দিয়েছ';
-        }
-
-        // ---- FAV BADGE ----
-        function updateFavBadge() {
-            const count = getFavCount();
-            favCountEl.textContent = count;
-            if (count > 0) {
-                favStarIcon.innerHTML =
-                    `<svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-            } else {
-                favStarIcon.innerHTML =
-                    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-            }
-        }
-
-        // ============================================================
-        //  INIT
-        // ============================================================
-        render();
-    </script>
-
+    <script src="data.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
