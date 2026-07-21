@@ -1655,3 +1655,17 @@ body {
     margin-top: 10px;
     font-size: 0.9rem;
 }
+/* গ্রুপ টাইটেল */
+.group-title {
+    grid-column: 1 / -1;
+    padding: 10px 0 4px;
+}
+.group-title h3 {
+    font-size: 1rem;
+    color: var(--primary);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 6px;
+}
+.dark-mode .group-title h3 {
+    color: #90caf9;
+}
