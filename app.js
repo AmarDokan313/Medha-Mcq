@@ -27,7 +27,7 @@ window.addEventListener('load', () => {
             updateUserUI();
             updateLeaderboard();
         }, 300);
-    }, 800);
+    }, 100);
 });
 
 function loadDarkMode() {
