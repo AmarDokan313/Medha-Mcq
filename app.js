@@ -28,7 +28,7 @@ window.addEventListener('load', () => {
             showPage('home-page');
             checkAdTimer();
         }, 500);
-    }, 2500);
+    }, 800);
 });
 
 // বিষয় দেখানো
