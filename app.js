@@ -140,6 +140,30 @@ function showChapterMCQ(chapterIndex) {
 }
 
 function selectMCQOption(btn, qIndex, optionIndex, correctIndex) {
+    const card = btn.closest('.mcq-card');
+    const options = card.querySelectorAll('.mcq-option');
+    
+    let alreadyAnswered = false;
+    options.forEach(opt => {
+        if (opt.classList.contains('correct') || opt.classList.contains('wrong')) {
+            alreadyAnswered = true;
+        }
+    });
+    
+    if (alreadyAnswered) return;
+    
+    options.forEach(opt => {
+        opt.disabled = true;
+    });
+
+    options.forEach((opt, i) => {
+        if (i === correctIndex) {
+            opt.classList.add('correct');
+        } else if (i === optionIndex && optionIndex !== correctIndex) {
+            opt.classList.add('wrong');
+        }
+    });
+}
     const options = btn.parentElement.querySelectorAll('.mcq-option');
     options.forEach(opt => opt.disabled = true);
     options.forEach((opt, i) => {
