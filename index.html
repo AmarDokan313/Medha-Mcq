@@ -566,5 +566,133 @@ document.addEventListener('click', function(e) {
     }
 });
 </script> 
+    <!-- প্রিমিয়াম পেজ -->
+<div id="premium-page" class="page hidden">
+    <nav class="navbar">
+        <button class="back-btn" onclick="showPage('home-page')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="nav-logo">💎 প্রিমিয়াম</div>
+    </nav>
+    <div class="premium-container">
+        
+        <!-- ব্যানার -->
+        <div class="premium-banner">
+            <div class="premium-icon">👑</div>
+            <h2>Medha MCQ প্রিমিয়াম</h2>
+            <p>সেরা প্রস্তুতি নিন, সেরা ফলাফল পান!</p>
+        </div>
+
+        <!-- মূল্য -->
+        <div class="price-card">
+            <div class="price-badge">সেরা অফার</div>
+            <div class="price-amount">
+                <span class="currency">৳</span>
+                <span class="amount">149</span>
+                <span class="period">/মাস</span>
+            </div>
+            <div class="price-old">আগে ছিল ৳299</div>
+        </div>
+
+        <!-- সুবিধা -->
+        <div class="features-card">
+            <h3>প্রিমিয়ামে যা পাবেন:</h3>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>সম্পূর্ণ বিজ্ঞাপনমুক্ত</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>সকল বিষয়ের সকল অধ্যায়</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>বিশেষ MCQ সেট</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>AI চ্যাটবট সীমাহীন</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>পরীক্ষার বিশেষ প্রস্তুতি</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span>লাইভ সাপোর্ট</span>
+            </div>
+        </div>
+
+        <!-- পেমেন্ট অপশন -->
+        <div class="payment-card">
+            <h3>পেমেন্ট করুন:</h3>
+            
+            <!-- বিকাশ -->
+            <div class="payment-option" onclick="showPayment('bkash')">
+                <div class="payment-logo bkash-logo">বিকাশ</div>
+                <div class="payment-info">
+                    <p>বিকাশে পেমেন্ট করুন</p>
+                    <span>সহজ ও নিরাপদ</span>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            <!-- নগদ -->
+            <div class="payment-option" onclick="showPayment('nagad')">
+                <div class="payment-logo nagad-logo">নগদ</div>
+                <div class="payment-info">
+                    <p>নগদে পেমেন্ট করুন</p>
+                    <span>সহজ ও নিরাপদ</span>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- যোগাযোগ -->
+        <div class="contact-card">
+            <p>সাহায্যের জন্য যোগাযোগ করুন:</p>
+            <a href="https://wa.me/8801700000000" class="contact-btn whatsapp-btn">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="https://facebook.com" class="contact-btn facebook-btn">
+                <i class="fab fa-facebook"></i> Facebook
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- পেমেন্ট মডাল -->
+<div id="payment-modal" class="modal hidden">
+    <div class="modal-content payment-modal-content">
+        <h3 id="payment-title">বিকাশে পেমেন্ট</h3>
+        <div class="payment-steps">
+            <div class="step">
+                <span class="step-num">১</span>
+                <p id="payment-number">01XXXXXXXXX নম্বরে</p>
+            </div>
+            <div class="step">
+                <span class="step-num">২</span>
+                <p>১৪৯ টাকা Send Money করুন</p>
+            </div>
+            <div class="step">
+                <span class="step-num">৩</span>
+                <p>Transaction ID টি নিচে দিন</p>
+            </div>
+        </div>
+        <input type="text" id="transaction-id" 
+               placeholder="Transaction ID লিখুন" 
+               class="login-input">
+        <input type="text" id="user-mobile" 
+               placeholder="আপনার মোবাইল নম্বর" 
+               class="login-input">
+        <button class="login-submit-btn" onclick="submitPayment()">
+            <i class="fas fa-paper-plane"></i> জমা দিন
+        </button>
+        <button class="close-modal-btn" onclick="closePaymentModal()">
+            বাতিল করুন
+        </button>
+    </div>
+</div>
 </body>
 </html>
