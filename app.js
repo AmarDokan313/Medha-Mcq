@@ -583,3 +583,59 @@ function getAIResponse(message) {
 function handleAIInput(event) {
     if (event.key === 'Enter') sendAIMessage();
 }
+// প্রিমিয়াম সিস্টেম
+function showPremium() {
+    showPage('premium-page');
+}
+
+function showPayment(method) {
+    const modal = document.getElementById('payment-modal');
+    const title = document.getElementById('payment-title');
+    const number = document.getElementById('payment-number');
+
+    if (method === 'bkash') {
+        title.textContent = '📱 বিকাশে পেমেন্ট';
+        number.textContent = '01XXXXXXXXX নম্বরে (বিকাশ)';
+    } else {
+        title.textContent = '📱 নগদে পেমেন্ট';
+        number.textContent = '01XXXXXXXXX নম্বরে (নগদ)';
+    }
+    modal.classList.remove('hidden');
+}
+
+function closePaymentModal() {
+    document.getElementById('payment-modal').classList.add('hidden');
+}
+
+function submitPayment() {
+    const txId = document.getElementById('transaction-id').value.trim();
+    const mobile = document.getElementById('user-mobile').value.trim();
+
+    if (!txId || !mobile) {
+        showToast('সব তথ্য দিন!');
+        return;
+    }
+
+    // পেমেন্ট তথ্য সেভ
+    const payment = {
+        txId, mobile,
+        amount: 149,
+        date: new Date().toLocaleDateString('bn-BD'),
+        status: 'pending'
+    };
+
+    const payments = JSON.parse(localStorage.getItem('payments') || '[]');
+    payments.push(payment);
+    localStorage.setItem('payments', JSON.stringify(payments));
+
+    closePaymentModal();
+    showToast('✅ আবেদন পাঠানো হয়েছে! যাচাই করা হবে।');
+
+    document.getElementById('transaction-id').value = '';
+    document.getElementById('user-mobile').value = '';
+}
+
+// প্রিমিয়াম চেক
+function isPremium() {
+    return localStorage.getItem('isPremium') === 'true';
+}
