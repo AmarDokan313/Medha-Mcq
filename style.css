@@ -1683,3 +1683,15 @@ body {
 .dark-mode .group-title h3 {
     color: #90caf9;
 }
+.mcq-option {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    touch-action: manipulation;
+}
+
+.mcq-option:disabled {
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
