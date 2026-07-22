@@ -519,5 +519,39 @@
 
 <script src="data.js"></script>
 <script src="app.js"></script>
+   <script>
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('mcq-option') || 
+        e.target.closest('.mcq-option')) {
+        
+        const btn = e.target.classList.contains('mcq-option') ? 
+                    e.target : e.target.closest('.mcq-option');
+        
+        const optionIndex = parseInt(btn.getAttribute('data-option'));
+        const correctIndex = parseInt(btn.getAttribute('data-correct'));
+        const allOptions = btn.closest('.mcq-options').querySelectorAll('.mcq-option');
+        
+        let answered = false;
+        allOptions.forEach(opt => {
+            if (opt.disabled) answered = true;
+        });
+        if (answered) return;
+        
+        allOptions.forEach(opt => {
+            opt.disabled = true;
+            const i = parseInt(opt.getAttribute('data-option'));
+            if (i === correctIndex) {
+                opt.style.background = '#e8f5e9';
+                opt.style.borderColor = '#00c853';
+                opt.style.color = '#2e7d32';
+            } else if (i === optionIndex && optionIndex !== correctIndex) {
+                opt.style.background = '#ffebee';
+                opt.style.borderColor = '#ff1744';
+                opt.style.color = '#c62828';
+            }
+        });
+    }
+});
+</script> 
 </body>
 </html>
