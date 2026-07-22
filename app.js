@@ -639,3 +639,170 @@ function submitPayment() {
 function isPremium() {
     return localStorage.getItem('isPremium') === 'true';
 }
+/* =====================================================
+   Premium Payment System - Medha MCQ
+   এই কোড app.js ফাইলের একদম নিচে বসাও
+===================================================== */
+
+(function () {
+    const PREMIUM_PRICE = 149;
+
+    // এখানে তোমার আসল বিকাশ/নগদ নাম্বার বসাবে
+    const PAYMENT_INFO = {
+        bkash: {
+            title: 'বিকাশে পেমেন্ট',
+            number: '01XXXXXXXXX',
+            methodName: 'বিকাশ'
+        },
+        nagad: {
+            title: 'নগদে পেমেন্ট',
+            number: '01XXXXXXXXX',
+            methodName: 'নগদ'
+        }
+    };
+
+    // এখানে তোমার WhatsApp নাম্বার বসাবে
+    const ADMIN_WHATSAPP = '8801700000000';
+
+    window.selectedPaymentMethod = null;
+
+    window.showPayment = function (method) {
+        window.selectedPaymentMethod = method;
+
+        const info = PAYMENT_INFO[method];
+
+        if (!info) {
+            alert('পেমেন্ট মাধ্যম পাওয়া যায়নি!');
+            return;
+        }
+
+        const paymentTitle = document.getElementById('payment-title');
+        const paymentNumber = document.getElementById('payment-number');
+        const transactionInput = document.getElementById('transaction-id');
+        const mobileInput = document.getElementById('user-mobile');
+        const paymentModal = document.getElementById('payment-modal');
+
+        if (!paymentModal) {
+            alert('Payment modal পাওয়া যায়নি। index.html চেক করুন।');
+            return;
+        }
+
+        if (paymentTitle) {
+            paymentTitle.innerText = info.title;
+        }
+
+        if (paymentNumber) {
+            paymentNumber.innerText = info.number + ' নম্বরে';
+        }
+
+        if (transactionInput) {
+            transactionInput.value = '';
+        }
+
+        if (mobileInput) {
+            mobileInput.value = '';
+        }
+
+        paymentModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closePaymentModal = function () {
+        const paymentModal = document.getElementById('payment-modal');
+
+        if (paymentModal) {
+            paymentModal.classList.add('hidden');
+        }
+
+        document.body.style.overflow = '';
+    };
+
+    function normalizeBDMobile(value) {
+        let mobile = String(value || '').replace(/\D/g, '');
+
+        if (mobile.startsWith('88')) {
+            mobile = mobile.slice(2);
+        }
+
+        return mobile;
+    }
+
+    window.submitPayment = function () {
+        const transactionInput = document.getElementById('transaction-id');
+        const mobileInput = document.getElementById('user-mobile');
+
+        if (!transactionInput || !mobileInput) {
+            alert('পেমেন্ট ইনপুট পাওয়া যায়নি।');
+            return;
+        }
+
+        const trxId = transactionInput.value.trim();
+        let mobile = mobileInput.value.trim();
+
+        mobile = normalizeBDMobile(mobile);
+
+        if (!window.selectedPaymentMethod) {
+            alert('আগে পেমেন্ট মাধ্যম নির্বাচন করুন।');
+            return;
+        }
+
+        if (trxId.length < 6) {
+            alert('সঠিক Transaction ID লিখুন।');
+            return;
+        }
+
+        if (!/^01[3-9]\d{8}$/.test(mobile)) {
+            alert('সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।');
+            return;
+        }
+
+        const info = PAYMENT_INFO[window.selectedPaymentMethod];
+
+        const paymentRequest = {
+            id: Date.now(),
+            method: window.selectedPaymentMethod,
+            methodName: info.methodName,
+            transactionId: trxId,
+            mobile: mobile,
+            amount: PREMIUM_PRICE,
+            status: 'pending',
+            date: new Date().toLocaleString('bn-BD')
+        };
+
+        const oldRequests = JSON.parse(localStorage.getItem('premiumPaymentRequests') || '[]');
+        oldRequests.unshift(paymentRequest);
+
+        localStorage.setItem('premiumPaymentRequests', JSON.stringify(oldRequests));
+        localStorage.setItem('premiumStatus', 'pending');
+
+        window.closePaymentModal();
+
+        alert('আপনার পেমেন্ট অনুরোধ জমা হয়েছে। যাচাই করার পর প্রিমিয়াম চালু করা হবে।');
+
+        const message =
+`নতুন প্রিমিয়াম পেমেন্ট অনুরোধ
+
+পেমেন্ট মাধ্যম: ${info.methodName}
+মোবাইল নম্বর: ${mobile}
+Transaction ID: ${trxId}
+পরিমাণ: ৳${PREMIUM_PRICE}
+সময়: ${paymentRequest.date}`;
+
+        const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
+
+        const sendToWhatsapp = confirm('দ্রুত যাচাইয়ের জন্য WhatsApp-এ পেমেন্ট তথ্য পাঠাতে চান?');
+
+        if (sendToWhatsapp) {
+            window.open(whatsappUrl, '_blank');
+        }
+    };
+
+    // Modal এর বাইরে ক্লিক করলে বন্ধ হবে
+    document.addEventListener('click', function (e) {
+        const modal = document.getElementById('payment-modal');
+
+        if (modal && e.target === modal) {
+            window.closePaymentModal();
+        }
+    });
+})();
