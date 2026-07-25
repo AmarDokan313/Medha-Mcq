@@ -401,6 +401,24 @@ function submitExam() {
     document.getElementById('result-percentage').textContent = `${percentage}%`;
     document.getElementById('result-points').textContent = `+${points} পয়েন্ট`;
 
+    // স্কোর ট্র্যাকে ক্যারেক্টার হেঁটে গিয়ে স্কোর % পয়েন্টে থামবে
+    const scoreFillEl = document.getElementById('score-track-fill');
+    const scoreCharEl = document.getElementById('score-character');
+    if (scoreFillEl && scoreCharEl) {
+        scoreFillEl.style.transition = 'none';
+        scoreCharEl.style.transition = 'none';
+        scoreFillEl.style.width = '0%';
+        scoreCharEl.style.left = '0%';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                scoreFillEl.style.transition = 'width 1.7s cubic-bezier(.34,1.56,.64,1)';
+                scoreCharEl.style.transition = 'left 1.7s cubic-bezier(.34,1.56,.64,1)';
+                scoreFillEl.style.width = percentage + '%';
+                scoreCharEl.style.left = percentage + '%';
+            });
+        });
+    }
+
     if (percentage >= 80) {
         document.getElementById('result-icon').textContent = '🎉';
         document.getElementById('result-title').textContent = 'অসাধারণ!';
