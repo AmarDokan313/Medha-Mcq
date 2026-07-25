@@ -601,15 +601,19 @@ function showAdModal() {
 
     const isExpired = typeof adConfig !== 'undefined' && adConfig.expiry && new Date() > new Date(adConfig.expiry + 'T23:59:59');
 
-    // নতুন ফরম্যাট (একাধিক বিজ্ঞাপন) থাকলে সেটা ব্যবহার করা হবে,
-    // পুরনো ফরম্যাট (একটামাত্র html) থাকলে সেটাকেও একটা বিজ্ঞাপন হিসেবে ধরা হবে
-    let ads;
-    if (typeof adConfig !== 'undefined' && Array.isArray(adConfig.ads) && adConfig.ads.length > 0 && !isExpired) {
-        ads = adConfig.ads;
-    } else if (typeof adConfig !== 'undefined' && adConfig.html && !isExpired) {
-        ads = [{ html: adConfig.html, duration: 5 }];
-    } else {
-        ads = [{ html: '<div class="fake-ad">📢 বিজ্ঞাপন</div>', duration: 5 }];
+    // ads তালিকা থেকে খালি/ফাঁকা এন্ট্রি বাদ দেওয়া হচ্ছে
+    let ads = (typeof adConfig !== 'undefined' && Array.isArray(adConfig.ads))
+        ? adConfig.ads.filter(a => a && a.html && a.html.trim())
+        : [];
+
+    if (isExpired) ads = [];
+
+    // কোনো বিজ্ঞাপন সেট করা না থাকলে সাথে সাথেই বন্ধ করার সুযোগ দেওয়া হবে
+    if (ads.length === 0) {
+        placeholder.innerHTML = '';
+        countdownEl.textContent = '0';
+        closeBtn.classList.remove('hidden');
+        return;
     }
 
     let adIndex = 0;
@@ -623,11 +627,13 @@ function showAdModal() {
             return;
         }
 
+        // প্রতিটা ভিডিওর নিজের দৈর্ঘ্য (duration, সেকেন্ডে) অনুযায়ী অপেক্ষা করা হবে —
+        // ভিডিও শেষ হওয়ার সাথে সাথেই পরের বিজ্ঞাপনে যাবে
         const ad = ads[adIndex];
         adIndex++;
 
         placeholder.innerHTML = ad.html;
-        let countdown = ad.duration || 5;
+        let countdown = (typeof ad.duration === 'number' && ad.duration > 0) ? ad.duration : 15;
         countdownEl.textContent = countdown;
 
         if (timer) clearInterval(timer);
