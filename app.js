@@ -42,30 +42,22 @@ async function createServerScoreRow(phone, name) {
     });
 }
 
-async function updateServerPoints(phone, points) {
-    await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?phone=eq.${encodeURIComponent(phone)}`, {
-        method: 'PATCH',
+async function submitScoreToServer(identifier, name, correct, total) {
+    const res = await fetch(`${SCORE_SUPABASE_URL}/functions/v1/submit-score`, {
+        method: 'POST',
         headers: {
-            apikey: SCORE_ANON_KEY,
-            Authorization: `Bearer ${SCORE_ANON_KEY}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Authorization': `Bearer ${SCORE_ANON_KEY}`
         },
-        body: JSON.stringify({ points, updated_at: new Date().toISOString() })
+        body: JSON.stringify({ identifier, name, correct, total })
     });
-}
-
-async function updateServerPointsByEmail(email, points) {
-    await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?email=eq.${encodeURIComponent(email)}`, {
-        method: 'PATCH',
-        headers: {
-            apikey: SCORE_ANON_KEY,
-            Authorization: `Bearer ${SCORE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ points, updated_at: new Date().toISOString() })
-    });
+    const data = await res.json();
+    if (data && typeof data.totalPoints === 'number') {
+        // সার্ভারই আসল সংখ্যা ঠিক করে দেয়, লোকাল ভ্যালু সেটার সাথে মিলিয়ে নেওয়া হচ্ছে
+        totalPoints = data.totalPoints;
+        localStorage.setItem('totalPoints', totalPoints);
+    }
+    return data;
 }
 
 function showPage(pageId) {
@@ -448,11 +440,11 @@ function submitExam() {
     totalPoints += points;
     localStorage.setItem('totalPoints', totalPoints);
 
-    // সার্ভারেও পয়েন্ট আপডেট করা হচ্ছে (ফোন বা Gmail — যেভাবেই লগইন করা থাকুক)
-    if (currentUser && currentUser.email) {
-        updateServerPointsByEmail(currentUser.email, totalPoints).catch(() => {});
-    } else if (currentUser && currentUser.phone) {
-        updateServerPoints(currentUser.phone, totalPoints).catch(() => {});
+    // পয়েন্ট সার্ভারে পাঠানো হচ্ছে — সংখ্যা না, শুধু "কয়টা সঠিক/মোট কয়টা প্রশ্ন",
+    // সার্ভার নিজে হিসাব করে যোগ করবে (সরাসরি টেবিল এডিট আর সম্ভব না)
+    const scoreIdentifier = currentUser ? (currentUser.email || currentUser.phone) : null;
+    if (scoreIdentifier) {
+        submitScoreToServer(scoreIdentifier, currentUser.name, correct, total).catch(() => {});
     }
 
     document.getElementById('result-marks').textContent = correct;
