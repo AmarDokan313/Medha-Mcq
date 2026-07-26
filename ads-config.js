@@ -1,46 +1,29 @@
 // ============================================
-// বিজ্ঞাপন কনফিগারেশন — এডমিন এখানে বিজ্ঞাপনের ভিডিও/কোড বসাবে
+// বিজ্ঞাপন কনফিগারেশন — এখানে বিজ্ঞাপনের ভিডিও/কোড বসানো আছে
 // ============================================
 //
 // নিয়ম:
 // - একাধিক বিজ্ঞাপন (ads তালিকায়) পরপর দেখানো হবে
-// - প্রতিটা বিজ্ঞাপনের duration = সেই ভিডিওটা আসলে কত সেকেন্ডের, ঠিক ততটাই বসাবে
-//   (যেমন ভিডিও ২০ সেকেন্ডের হলে duration: 20 — তাহলে ভিডিও শেষ হওয়ার সাথে সাথেই
-//   পরের বিজ্ঞাপনে বা "বন্ধ করুন" বাটনে চলে যাবে, অতিরিক্ত অপেক্ষা করানো হবে না)
-// - সব কটা বিজ্ঞাপনের duration যোগ করলে মোট যা হয় সেটাই মোট অপেক্ষার সময়
-//   (১২০ সেকেন্ডের মধ্যে রাখার পরামর্শ, কিন্তু বাধ্যতামূলক না — আপনি যেকোনো সংখ্যা দিতে পারবেন)
-// - ads তালিকা পুরোপুরি খালি রাখলে (নিচে [] দিলে) কোনো বিজ্ঞাপন দেখানো হবে না,
+// - প্রতিটা বিজ্ঞাপনের duration = কত সেকেন্ড পর "বন্ধ করুন" বাটন/পরের বিজ্ঞাপন আসবে
+// - ads তালিকা খালি ([]) রাখলে কোনো বিজ্ঞাপন দেখানো হবে না,
 //   ব্যবহারকারীরা সাথে সাথেই "বন্ধ করুন" বাটন পাবে
 //
-// প্রতিটা বিজ্ঞাপনের জন্য:
-//   html     → বিজ্ঞাপনের কোড/ভিডিও
-//   duration → এই ভিডিওটা কত সেকেন্ড লম্বা (সেকেন্ডে)
-//
-// উদাহরণ — সাধারণ ইউটিউব ভিডিও (Shorts না, সাধারণ ভিডিও লিংক):
-//   html: '<iframe width="100%" height="200" src="https://www.youtube.com/embed/ভিডিও_আইডি?autoplay=1&mute=1" frameborder="0" allow="autoplay" allowfullscreen></iframe>'
-//
-// উদাহরণ — নিজের আপলোড করা ভিডিও (mp4 লিংক):
-//   html: '<video width="100%" controls autoplay muted><source src="তোমার_ভিডিও_লিংক.mp4" type="video/mp4"></video>'
-//
-// উদাহরণ — ব্যানার/ছবি বিজ্ঞাপন:
-//   html: '<a href="https://sponsor-website.com" target="_blank"><img src="https://sponsor-image-link.jpg" style="width:100%"></a>'
-//
-// ⚠️ Google AdSense-এর মতো <script> কোড এখানে কাজ করবে না — সেটা লাগলে আলাদাভাবে বলবে,
-// index.html-এর <head> অংশে বসাতে হবে।
+// নতুন ভিডিও যোগ করতে চাইলে ঠিক এই ফরম্যাটে ads তালিকায় আরেকটা { html: '...', duration: সংখ্যা } যোগ করবে
 
 const adConfig = {
     // এই তারিখের পর সব বিজ্ঞাপন বন্ধ হয়ে যাবে (ফাঁকা রাখলে মেয়াদ শেষ হবে না)
     expiry: '',
 
-    // পরপর দেখানো হবে এমন বিজ্ঞাপনের তালিকা — খালি [] রাখলে বিজ্ঞাপন ছাড়াই সাথে সাথে বন্ধ করা যাবে
     ads: [
         {
-            html: '<div class="fake-ad">📢 বিজ্ঞাপন ১</div>',
-            duration: 20
+            // YouTube ভিডিও — ১৫ সেকেন্ড পর স্কিপ করা যাবে
+            html: '<iframe width="100%" height="220" src="https://www.youtube.com/embed/hjH4uMP0mEw?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
+            duration: 15
         },
         {
-            html: '<div class="fake-ad">📢 বিজ্ঞাপন ২</div>',
-            duration: 20
+            // Facebook ভিডিও — ৭ সেকেন্ডের, পুরোটা দেখানোর পর স্কিপ করা যাবে
+            html: '<iframe width="100%" height="280" src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1CCMQM5S7n%2F&autoplay=true" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
+            duration: 7
         }
     ]
 };
