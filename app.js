@@ -14,6 +14,60 @@ let adFreeUntil = parseInt(localStorage.getItem('adFreeUntil') || '0');
 let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
 let totalPoints = parseInt(localStorage.getItem('totalPoints') || '0');
 
+// ---------------- পয়েন্ট সার্ভারে (Supabase) সেভ রাখার জন্য ----------------
+// ফোন নম্বর দিয়ে পয়েন্ট ট্র্যাক করা হয়, যাতে লগআউট করলে বা অন্য ডিভাইসে
+// একই নম্বর দিয়ে লগইন করলেও আগের পয়েন্ট ফিরে পাওয়া যায়
+const SCORE_SUPABASE_URL = 'https://pvxowurhtumxyedgezyg.supabase.co';
+const SCORE_ANON_KEY = 'sb_publishable_cTjhayZgxlFjfm9x9aVRew_WrO9_dEm';
+
+async function fetchServerPoints(phone) {
+    const res = await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?phone=eq.${encodeURIComponent(phone)}&select=points,name`, {
+        headers: { apikey: SCORE_ANON_KEY, Authorization: `Bearer ${SCORE_ANON_KEY}` }
+    });
+    if (!res.ok) throw new Error('স্কোর আনা যায়নি');
+    const data = await res.json();
+    return (data && data.length > 0) ? data[0] : null;
+}
+
+async function createServerScoreRow(phone, name) {
+    await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores`, {
+        method: 'POST',
+        headers: {
+            apikey: SCORE_ANON_KEY,
+            Authorization: `Bearer ${SCORE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=ignore-duplicates'
+        },
+        body: JSON.stringify({ phone, name, points: 0 })
+    });
+}
+
+async function updateServerPoints(phone, points) {
+    await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?phone=eq.${encodeURIComponent(phone)}`, {
+        method: 'PATCH',
+        headers: {
+            apikey: SCORE_ANON_KEY,
+            Authorization: `Bearer ${SCORE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ points, updated_at: new Date().toISOString() })
+    });
+}
+
+async function updateServerPointsByEmail(email, points) {
+    await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?email=eq.${encodeURIComponent(email)}`, {
+        method: 'PATCH',
+        headers: {
+            apikey: SCORE_ANON_KEY,
+            Authorization: `Bearer ${SCORE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ points, updated_at: new Date().toISOString() })
+    });
+}
+
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
     document.getElementById(pageId).classList.remove('hidden');
@@ -394,6 +448,13 @@ function submitExam() {
     totalPoints += points;
     localStorage.setItem('totalPoints', totalPoints);
 
+    // সার্ভারেও পয়েন্ট আপডেট করা হচ্ছে (ফোন বা Gmail — যেভাবেই লগইন করা থাকুক)
+    if (currentUser && currentUser.email) {
+        updateServerPointsByEmail(currentUser.email, totalPoints).catch(() => {});
+    } else if (currentUser && currentUser.phone) {
+        updateServerPoints(currentUser.phone, totalPoints).catch(() => {});
+    }
+
     document.getElementById('result-marks').textContent = correct;
     document.getElementById('correct-count').textContent = correct;
     document.getElementById('wrong-count').textContent = wrong;
@@ -558,23 +619,100 @@ function updateLeaderboard() {
     if (leaderListFull) leaderListFull.innerHTML = html;
 }
 
-function loginUser() {
-    const name = document.getElementById('login-name').value;
-    const phone = document.getElementById('login-phone').value;
+async function loginUser() {
+    const name = document.getElementById('login-name').value.trim();
+    const phone = document.getElementById('login-phone').value.trim();
     if (!name || !phone) {
         showToast('নাম ও ফোন নম্বর দিন!');
         return;
     }
     currentUser = { name, phone, joinDate: new Date().toLocaleDateString('bn-BD') };
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // এই ফোন নম্বরের আগের পয়েন্ট সার্ভার থেকে খুঁজে আনা হচ্ছে
+    try {
+        const existing = await fetchServerPoints(phone);
+        if (existing) {
+            totalPoints = existing.points || 0;
+        } else {
+            totalPoints = 0;
+            await createServerScoreRow(phone, name);
+        }
+        localStorage.setItem('totalPoints', totalPoints);
+    } catch (e) {
+        // সার্ভারে সমস্যা হলেও লগইন আটকাবে না, আপাতত লোকাল পয়েন্ট দিয়েই চলবে
+    }
+
     updateUserUI();
+    updateLeaderboard();
     showToast(`স্বাগতম ${name}! 🎉`);
     showPage('home-page');
 }
 
-function loginWithGoogle() {
-    showToast('শীঘ্রই আসছে!');
+async function loginWithGoogle() {
+    try {
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        const supabase = createClient(SCORE_SUPABASE_URL, SCORE_ANON_KEY);
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.href }
+        });
+        if (error) {
+            showToast('Google Login শুরু করা যায়নি: ' + error.message);
+        }
+        // সফল হলে Google-এর পেজে নিয়ে যাবে, তারপর সাইটে ফিরিয়ে আনবে —
+        // ফেরার পর নিচের handleGoogleRedirect() ফাংশনটা লগইন সম্পূর্ণ করবে
+    } catch (e) {
+        showToast('একটা সমস্যা হয়েছে, আবার চেষ্টা করুন।');
+    }
 }
+
+// Google থেকে ফেরার পর সেশন চেক করে লগইন সম্পূর্ণ করা এবং পয়েন্ট সিঙ্ক করা
+async function handleGoogleRedirect() {
+    try {
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        const supabase = createClient(SCORE_SUPABASE_URL, SCORE_ANON_KEY);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session || !session.user) return;
+
+        const email = session.user.email;
+        const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || email;
+
+        currentUser = { name, email, phone: email, joinDate: new Date().toLocaleDateString('bn-BD') };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        // ইমেইল দিয়ে আগের পয়েন্ট খোঁজা/তৈরি করা হচ্ছে (ফোনের বদলে ইমেইল দিয়ে)
+        const res = await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores?email=eq.${encodeURIComponent(email)}&select=points`, {
+            headers: { apikey: SCORE_ANON_KEY, Authorization: `Bearer ${SCORE_ANON_KEY}` }
+        });
+        const data = await res.json();
+        if (data && data.length > 0) {
+            totalPoints = data[0].points || 0;
+        } else {
+            totalPoints = 0;
+            await fetch(`${SCORE_SUPABASE_URL}/rest/v1/user_scores`, {
+                method: 'POST',
+                headers: {
+                    apikey: SCORE_ANON_KEY,
+                    Authorization: `Bearer ${SCORE_ANON_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=ignore-duplicates'
+                },
+                body: JSON.stringify({ email, name, points: 0 })
+            });
+        }
+        localStorage.setItem('totalPoints', totalPoints);
+
+        updateUserUI();
+        updateLeaderboard();
+        showToast(`স্বাগতম ${name}! 🎉`);
+    } catch (e) {
+        // চুপচাপ থাকবে, সাধারণ (ফোন নম্বর) লগইন তো কাজ করছেই
+    }
+}
+
+// পেজ লোড হওয়ার সাথে সাথেই চেক করা হবে Google থেকে ফেরত এসেছে কিনা
+window.addEventListener('load', handleGoogleRedirect);
 
 function logout() {
     currentUser = null;
@@ -636,15 +774,36 @@ function showAdModal() {
         let countdown = (typeof ad.duration === 'number' && ad.duration > 0) ? ad.duration : 15;
         countdownEl.textContent = countdown;
 
-        if (timer) clearInterval(timer);
-        timer = setInterval(() => {
-            countdown--;
-            countdownEl.textContent = countdown;
-            if (countdown <= 0) {
-                clearInterval(timer);
-                playNextAd();
+        // ভিডিও (iframe) আসলে লোড হওয়ার পরই গণনা শুরু হবে, তার আগে না —
+        // এতে ধীর নেটওয়ার্কেও ভিডিও দেখার পুরো সময়টুকু পাওয়া যাবে
+        let countdownStarted = false;
+        function startCountdown() {
+            if (countdownStarted) return;
+            countdownStarted = true;
+
+            if (timer) clearInterval(timer);
+            timer = setInterval(() => {
+                countdown--;
+                countdownEl.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    playNextAd();
+                }
+            }, 1000);
+        }
+
+        const iframeEl = placeholder.querySelector('iframe, video');
+        if (iframeEl) {
+            iframeEl.addEventListener('load', startCountdown);
+            if (iframeEl.tagName === 'VIDEO') {
+                iframeEl.addEventListener('loadeddata', startCountdown);
             }
-        }, 1000);
+            // কোনো কারণে load ইভেন্ট না এলেও (কিছু ব্রাউজারে cross-origin iframe-এ হয় না),
+            // সর্বোচ্চ ৪ সেকেন্ড অপেক্ষার পর নিজে থেকেই গণনা শুরু হয়ে যাবে
+            setTimeout(startCountdown, 4000);
+        } else {
+            startCountdown();
+        }
     }
 
     playNextAd();
