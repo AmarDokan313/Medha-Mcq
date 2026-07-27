@@ -27,7 +27,21 @@ async function loadMyRole() {
 window.addEventListener('load', () => {
     setTimeout(loadMyRole, 400);
     watchForAdminWrapAndFixVisibility();
+    attachChapterNameAutofill();
 });
+
+// "অধ্যায় নির্বাচন করুন" ড্রপডাউনে বাছাই বদলালে অধ্যায়ের নামের ঘরটা
+// স্বয়ংক্রিয়ভাবে সেই অধ্যায়ের বর্তমান নাম দিয়ে ভরে দেওয়া (চাইলে বদলে দেওয়া যাবে)
+function attachChapterNameAutofill() {
+    const chapSel = document.getElementById('add-chapter');
+    const nameInput = document.getElementById('add-chapter-name');
+    if (!chapSel || !nameInput) return;
+
+    chapSel.addEventListener('change', () => {
+        const opt = chapSel.selectedOptions[0];
+        nameInput.value = opt ? opt.textContent.trim() : '';
+    });
+}
 
 // admin-panel.js এর applyRoleUI() ইনলাইন style.display='' সেট করে, কিন্তু CSS-এ
 // .admin-only{display:none} থাকায় সেটা এডমিনের ক্ষেত্রেও লুকানোই থেকে যায় —
@@ -99,7 +113,9 @@ window.addQuestion = async function () {
         payload.chapter_index = null;
     } else {
         const chap = parseInt(document.getElementById('add-chapter').value);
+        const chapName = document.getElementById('add-chapter-name').value.trim();
         payload.chapter_index = chap;
+        payload.chapter_name = chapName || null;
         payload.model_number = null;
     }
 
@@ -217,6 +233,10 @@ window.editSupaQuestion = async function (id) {
     } else {
         fillChapterDropdown('add-subject', 'add-chapter');
         document.getElementById('add-chapter').value = q.chapter_index;
+        const nameInput = document.getElementById('add-chapter-name');
+        if (nameInput) {
+            nameInput.value = q.chapter_name || (document.getElementById('add-chapter').selectedOptions[0]?.textContent.trim() || '');
+        }
     }
 
     document.getElementById('add-question').value = q.question;
