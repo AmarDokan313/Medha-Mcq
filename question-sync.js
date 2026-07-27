@@ -17,7 +17,7 @@ async function syncQuestionsFromSupabase() {
 
     const { data: rows, error } = await supabase
         .from('questions')
-        .select('id, subject_key, chapter_index, model_number, question, options, correct, explanation');
+        .select('id, subject_key, chapter_index, chapter_name, model_number, question, options, correct, explanation');
 
     if (error || !rows) return;
 
@@ -25,6 +25,8 @@ async function syncQuestionsFromSupabase() {
     const grouped = {};
     // মডেল টেস্টের প্রশ্ন subject_key + model_number অনুযায়ী গ্রুপ করা
     const modelGrouped = {};
+    // প্রতিটা subject_key|chapter_index এর জন্য Supabase-এ সেভ করা আসল অধ্যায়ের নাম
+    const chapterNames = {};
 
     rows.forEach(r => {
         const q = {
@@ -43,18 +45,42 @@ async function syncQuestionsFromSupabase() {
             const key = r.subject_key + '|' + r.chapter_index;
             if (!grouped[key]) grouped[key] = [];
             grouped[key].push(q);
+            if (r.chapter_name && r.chapter_name.trim()) {
+                chapterNames[key] = r.chapter_name.trim();
+            }
         }
     });
 
-    Object.keys(window.subjectData).forEach(subj => {
-        window.subjectData[subj].chapters.forEach((ch, idx) => {
-            const key = subj + '|' + idx;
-            if (grouped[key]) {
-                ch.questions = grouped[key];
-                ch.questionCount = grouped[key].length;
-            }
-        });
+    Object.keys(grouped).forEach(key => {
+        const sep = key.lastIndexOf('|');
+        const subj = key.slice(0, sep);
+        const idx = parseInt(key.slice(sep + 1));
+
+        if (!window.subjectData[subj]) return; // বিষয়টাই না থাকলে স্কিপ
+
+        const chapters = window.subjectData[subj].chapters;
+
+        // ইনডেক্স পর্যন্ত অধ্যায় না থাকলে খালি অধ্যায় তৈরি করে ফাঁক পূরণ করা
+        while (chapters.length <= idx) {
+            chapters.push({
+                id: chapters.length + 1,
+                name: 'অধ্যায় ' + (chapters.length + 1),
+                questionCount: 0,
+                questions: []
+            });
+        }
+
+        // Supabase-এ আসল অধ্যায়ের নাম দেওয়া থাকলে সেটাই ব্যবহার করা (নতুন বা পুরনো, দুটোতেই)
+        if (chapterNames[key]) {
+            chapters[idx].name = chapterNames[key];
+        }
+
+        chapters[idx].questions = grouped[key];
+        chapters[idx].questionCount = grouped[key].length;
     });
+
+    // এডমিন প্যানেলের ড্রপডাউন বা অন্য UI যদি এই ইভেন্ট শোনে, রিফ্রেশ করার সুযোগ পাবে
+    window.dispatchEvent(new CustomEvent('subjectDataSynced'));
 
     window.modelTestData = modelGrouped;
 
